@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Menu</title>
+    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+    color: #333;
+}
+.menu-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+}
+.cafe-images {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.cafe-images img{
+    width: 32%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    filter: grayscale(100%);
+}
+.cafe-images img:hover {
+    filter: grayscale(0%);
+}
+.menu-item {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+.menu-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+.menu-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+    filter: grayscale(100%);
+}
+.menu-item:hover img {
+    transform: scale(1.1);
+    filter: grayscale(0%);
+}
+.menu-item-details {
+    flex-grow: 1;
+}
+.menu-item h3 {
+    margin: 0 0 10px 0;
+    transition: color 0.3s ease;
+}
+.menu-item:hover h3 {
+    color: #000;
+}
+.menu-item p {
+    margin: 0 0 5px 0;
+}
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.quantity-controls button {
+    background-color: #000;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+.quantity-controls button:hover {
+    background-color: #333;
+}
+.quantity-controls input {
+    width: 40px;
+    text-align: center;
+    margin: 0 10px;
+    border: 1px solid #000;
+}
+.delete-item {
+    background-color: #fff;
+    border: 1px solid #000;
+    color: #000;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+.delete-item:hover {
+    background-color: #000;
+    color: #fff;
+}
+#order-summary {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+#pay-now {
+    background-color: #fff;
+    border: 1px solid #fff;
+    color: #000;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-left: 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+#pay-now:hover {
+    background-color: #000;
+    color: #fff;
+}
+.motivation {
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+ .review-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #000000;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+.review-button:hover {
+    background-color: #333;
+}
+.review-button i {
+    margin-right: 5px;
+}
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <a href="review.html" class="review-button" target="_blank">
+            <i class="fas fa-star"></i> Reviews
+        </a>
+        <div class="cafe-images">
+            <img src="https://media.istockphoto.com/id/1148223648/photo/interior-of-a-pub.jpg?s=612x612&w=0&k=20&c=ol9gdn-NQRREHUydQ2loU6WpCSeUTjt8qFGekYDvx0o=" alt="Cafe Interior">
+            <img src="https://founterior.com/wp-content/uploads/2014/09/Cafe-playground-in-the-backayrd.jpg" alt="Cafe Exterior">
+            <img src="https://media-cdn.tripadvisor.com/media/photo-o/0a/80/ac/eb/cafe-restaurant-amsterdam.jpg" alt="Cafe Ambiance">
+        </div>
+        <p class="motivation">Indulge in our delightful menu. Remember, good food choices are a great way to nourish both body and soul!</p>
+        <div class="menu-item">
+            <img src="https://images.immediate.co.uk/production/volatile/sites/30/2020/12/classic-vanilla-milkshake-9e7745f.jpg?quality=90&resize=544,494" alt="vs">
+            <div class="menu-item-details">
+                <h3>Vanilla Shake</h3>
+                <p>Fuel your potential with every sip</p>    
+                <p>Price: Rs 65 </p>
+                <p>Preparation Time:  3-4minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('vs')">-</button>
+                    <input type="number" id="vs-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('vs')">+</button>
+                    <button class="delete-item" onclick="deleteItem('vs')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://uproxx.com/wp-content/uploads/2022/06/desserts-shakes-and-sides.jpg" alt="Ss">
+            <div class="menu-item-details">
+                <h3>Strawberry shake</h3>
+                <p>Flavor that make you happy</p>    
+                <p>Price: Rs 70 </p>
+                <p>Preparation Time:  3-4 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('ss')">-</button>
+                    <input type="number" id="ss-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('ss')">+</button>
+                    <button class="delete-item" onclick="deleteItem('ss')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://pintsizedbaker.com/wp-content/uploads/2013/08/Triple-Chocolate-Milkshakes-9.jpg.webp" alt="cs">
+            <div class="menu-item-details">
+                <h3>Chocolate Shake</h3>
+                <p>This is the taste of our childhood  </p>    
+                <p>Price: Rs 90 </p>
+                <p>Preparation Time:  3-4minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('cs')">-</button>
+                    <input type="number" id="cs-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('cs')">+</button>
+                    <button class="delete-item" onclick="deleteItem('cs')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://media.gettyimages.com/id/1133425883/photo/espresso-coffee-maker.jpg?s=612x612&w=0&k=20&c=I3FB-elrUmfWF9fbrawxmqEjdNGD9mWTBs_6oU6TzpM=" alt="hc">
+            <div class="menu-item-details">
+                <h3>Hot Coffee</h3>
+                <p>Relax your mind with a sip of coffee</p>    
+                <p>Price: Rs 25 </p>
+                <p>Preparation Time:  3 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('hc')">-</button>
+                    <input type="number" id="hc-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('hc')">+</button>
+                    <button class="delete-item" onclick="deleteItem('hc')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://artofpalate.com/wp-content/uploads/2015/03/coffee-photography.jpg" alt="hhc">
+            <div class="menu-item-details">
+                <h3>Hot Hazelnut Coffee</h3>
+                <p>Add some flavor in your life</p>    
+                <p>Price: Rs 30</p>
+                <p>Preparation Time:  3-4minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('hhc')">-</button>
+                    <input type="number" id="hhc-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('hhc')">+</button>
+                    <button class="delete-item" onclick="deleteItem('hhc')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://t4.ftcdn.net/jpg/08/98/59/97/360_F_898599792_EijVasZ8S4YDQko5eIy2Xe17eF32Up6d.jpg" alt="cc">
+            <div class="menu-item-details">
+                <h3>Cold Coffee</h3>
+                <p>Chill your mind with a sip</p>    
+                <p>Price: Rs 50 </p>
+                <p>Preparation Time:  5 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('cc')">-</button>
+                    <input type="number" id="cc-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('cc')">+</button>
+                    <button class="delete-item" onclick="deleteItem('cc')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://www.nickandalicia.com/wp-content/uploads/2017/06/Vanilla-Hazelnut-Iced-Coffee-2727.jpg" alt="hcc">
+            <div class="menu-item-details">
+                <h3>Hazelnut Cold Coffee</h3>
+                <p>Flavorful secrets unveiled</p>    
+                <p>Price: Rs 60</p>
+                <p>Preparation Time:  5 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('hcc')">-</button>
+                    <input type="number" id="hcc-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('hcc')">+</button>
+                    <button class="delete-item" onclick="deleteItem('hcc')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://celebrationgeneration.com/wp-content/uploads/2013/05/Paneer-Burgers-8.jpg" alt="pb">
+            <div class="menu-item-details">
+                <h3>Paneer Burger</h3>
+                <p>Sizzle,Stack,and Savor</p>    
+                <p>Price: Rs 75 </p>
+                <p>Preparation Time: 10 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('pb')">-</button>
+                    <input type="number" id="pb-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('pb')">+</button>
+                    <button class="delete-item" onclick="deleteItem('pb')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://www.honeywhatscooking.com/wp-content/uploads/2022/06/Bombay-Grilled-Sandwich20-780x556.jpg" alt="gs">
+            <div class="menu-item-details">
+                <h3>Grilled Sandwich</h3>
+                <p>Good sandwich made good mood</p>    
+                <p>Price: Rs 55 </p>
+                <p>Preparation Time: 10 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('gs')">-</button>
+                    <input type="number" id="gs-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('gs')">+</button>
+                    <button class="delete-item" onclick="deleteItem('gs')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://thumbs.dreamstime.com/b/grilled-paneer-sandwich-indian-style-close-up-136677968.jpg" alt="ps">
+            <div class="menu-item-details">
+                <h3>Paneer Sandwich</h3>
+                <p>Big bite little money</p>    
+                <p>Price: Rs 70 </p>
+                <p>Preparation Time:  10 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('ps')">-</button>
+                    <input type="number" id="ps-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('ps')">+</button>
+                    <button class="delete-item" onclick="deleteItem('ps')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://breadsandsweets.com/wp-content/uploads/2021/05/cheese-buns-pic-2.jpg" alt="cb">
+            <div class="menu-item-details">
+                <h3>Cheese Bun</h3>
+                <p>Bite into bliss</p>    
+                <p>Price: Rs 35 </p>
+                <p>Preparation Time: 6 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('cb')">-</button>
+                    <input type="number" id="cb-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('cb')">+</button>
+                    <button class="delete-item" onclick="deleteItem('cb')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://img.freepik.com/premium-photo/fries-french-fries-with-tomato-sauce-sweet-potato-finger-chips-golden-frenchfried-potatoes_162695-47326.jpg?size=626&ext=jpg" alt="ff">
+            <div class="menu-item-details">
+                <h3>French Fries</h3>
+                <p>Handmade,Heartfelt,Hearty</p>    
+                <p>Price: Rs 50 </p>
+                <p>Preparation Time: 6 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('ff')">-</button>
+                    <input type="number" id="ff-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('ff')">+</button>
+                    <button class="delete-item" onclick="deleteItem('ff')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://storage.googleapis.com/cscom-2019.appspot.com/uploads/2018/10/crispy-honey-chilli-potatoes-recipe.jpg" alt="cp">
+            <div class="menu-item-details">
+                <h3>Chilly Potato Gravy</h3>
+                <p>The land of juicy delights</p>    
+                <p>Price: Rs 65 </p>
+                <p>Preparation Time: 7 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('cp')">-</button>
+                    <input type="number" id="cp-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('cp')">+</button>
+                    <button class="delete-item" onclick="deleteItem('cp')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://img.freepik.com/premium-photo/spicy-paneer-tikka-with-garnish-finely-chopped_1169880-193442.jpg?size=626&ext=jpg" alt="cp">
+            <div class="menu-item-details">
+                <h3>Chilly Paneer</h3>
+                <p>Deliciously yours</p>    
+                <p>Price: Rs 80 </p>
+                <p>Preparation Time: 6 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('cp')">-</button>
+                    <input type="number" id="cp-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('cp')">+</button>
+                    <button class="delete-item" onclick="deleteItem('cp')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://c.ndtvimg.com/2023-10/8pr6ki28_maggi_625x300_17_October_23.jpg?im=FaceCrop,algorithm=dnn,width=540,height=720" alt="mm">
+            <div class="menu-item-details">
+                <h3>Maggie Masaledar</h3>
+                <p>Maggie crafted with passion and perfection</p>    
+                <p>Price: Rs 60 </p>
+                <p>Preparation Time:10 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('mm')">-</button>
+                    <input type="number" id="mm-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('mm')">+</button>
+                    <button class="delete-item" onclick="deleteItem('mm')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgWTTICqqgdwS81XYfVuxLvniT2p2H6EYjnCF2W-TZuSAmT3aYy3qMfl0Xl1l_8cduSv4Z5vIGR5NjLarPVOih3Mu82Zzm202Pdmxwkz3mnU4duD-emSwb7A13lYEZlpd26QpKnbVaVz0k/s1600/MAggi-paneer-noodles.jpg" alt="cpm">
+            <div class="menu-item-details">
+                <h3>Chilly Paneer Maggie</h3>
+                <p>Step into maggie wonderland</p>    
+                <p>Price: Rs 70 </p>
+                <p>Preparation Time: 10 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('cpm')">-</button>
+                    <input type="number" id="cpm-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('cpm')">+</button>
+                    <button class="delete-item" onclick="deleteItem('cpm')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://t3.ftcdn.net/jpg/05/86/52/76/360_F_586527672_o5bIef6WQPFTovbTlZ7yhjb6AV0M0iSG.jpg" alt="n">
+            <div class="menu-item-details">
+                <h3>Noodles</h3>
+                <p>Where noodles meet culinary excellence</p>    
+                <p>Price: Rs 50 </p>
+                <p>Preparation Time: 10 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('n')">-</button>
+                    <input type="number" id="n-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('n')">+</button>
+                    <button class="delete-item" onclick="deleteItem('n')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://herbivorecucina.com/wp-content/uploads/2015/06/Paneer-Chili-Noodles-1-1024x1024.jpg" alt="pn">
+            <div class="menu-item-details">
+                <h3>Paneer Noodles</h3>
+                <p>A Flavorful journey into noodle paradise</p>    
+                <p>Price: Rs 70 </p>
+                <p>Preparation Time: 12 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('pn')">-</button>
+                    <input type="number" id="pn-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('pn')">+</button>
+                    <button class="delete-item" onclick="deleteItem('pn')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://h7.alamy.com/comp/2GTKMRA/steam-momo-2GTKMRA.jpg" alt="sm">
+            <div class="menu-item-details">
+                <h3>Steam Momos (4 pc)</h3>
+                <p>Momos filled smile and happiness</p>    
+                <p>Price: Rs 30 </p>
+                <p>Preparation Time: 5 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('sm')">-</button>
+                    <input type="number" id="sm-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('sm')">+</button>
+                    <button class="delete-item" onclick="deleteItem('sm')">Delete</button>
+                </div>
+                </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://media.istockphoto.com/id/1341504203/photo/fried-momos-dumpling.jpg?s=612x612&w=0&k=20&c=mCUGBqUZw1M7Eu8Bh232by22Q5xKuhJkPG1h6BenbRs=" alt="fm">
+            <div class="menu-item-details">
+                <h3>Fried Momos (4 pc)</h3>
+                <p>Dough wrapped with stuffed and veggies</p>    
+                <p>Price: Rs 40 </p>
+                <p>Preparation Time: 6 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('fm')">-</button>
+                    <input type="number" id="fm-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('fm')">+</button>
+                    <button class="delete-item" onclick="deleteItem('fm')">Delete</button>
+                </div>
+                </div>
+        </div>
+        
+        <div class="menu-item">
+            <img src="https://www.temptingtreat.com/wp-content/uploads/2022/11/DSC_1831-copy-300x300.jpg" alt="kp">
+            <div class="menu-item-details">
+                <h3>Kulhad Pizza</h3>
+                <p>Pizza with fresh vegetables and petrichor</p>
+                <p>Price: Rs 140</p>
+                <p>Preparation Time: 15 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('kp')">-</button>
+                    <input type="number" id="kp-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('kp')">+</button>
+                    <button class="delete-item" onclick="deleteItem('kp')">Delete</button>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://burst.shopifycdn.com/photos/dinner-salad.jpg?width=1000&format=pjpg&exif=0&iptc=0" alt="Salad">
+            <div class="menu-item-details">
+                <h3>Salad</h3>
+                <p>Healthy salad with mixed greens and dressing</p>
+                <p>Price: 15</p>
+                <p>Preparation Time: 6-7 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('salad')">-</button>
+                    <input type="number" id="salad-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('salad')">+</button>
+                    <button class="delete-item" onclick="deleteItem('salad')">Delete</button>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://www.thespruceeats.com/thmb/wjKZDZgSPx1MZcQUyJwBxy9EOOM=/300x225/filters:no_upscale():max_bytes(150000):strip_icc()/idli-56a510b63df78cf772862c34.jpg" alt="Salad">
+            <div class="menu-item-details">
+                <h3>Idli (4 pcs)</h3>
+                <p>Steamed to perfection, served with love. Happy World Idli Day to all idli lovers out there!</p>
+                <p>Price: Rs 40</p>
+                <p>Preparation Time: 4 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('Idli')">-</button>
+                    <input type="number" id="Idli-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('Idli')">+</button>
+                    <button class="delete-item" onclick="deleteItem('Idli')">Delete</button>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://media.istockphoto.com/id/184946701/photo/pizza.jpg?s=612x612&w=0&k=20&c=97rc0VIi-s3mn4xe4xDy9S-XJ_Ohbn92XaEMaiID_eY=" alt="p">
+            <div class="menu-item-details">
+                <h3>Pizza</h3>
+                <p>Delicious pizza with your choice of toppings</p>
+                <p>Price: $12.99</p>
+                <p>Preparation Time: 20 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('p')">-</button> 
+                    <input type="number" id="p-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('p')">+</button>
+                    <button class="delete-item" onclick="deleteItem('p')">Delete</button>
+                </div>
+            </div>
+        </div>
+        <div class="menu-item">
+            <img src="https://img.freepik.com/free-photo/high-angle-pizza-with-cheese-cutlery_23-2148765336.jpg?size=626&ext=jpg" alt="ccp">
+            <div class="menu-item-details">
+                <h3>Cheese Corn Pizza</h3>
+                <p>Slice into world of flavor</p>    
+                <p>Price: Rs 145 </p>
+                <p>Preparation Time:  15 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('ccp')">-</button>
+                    <input type="number" id="ccp-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('ccp')">+</button>
+                    <button class="delete-item" onclick="deleteItem('ccp')">Delete</button>
+                </div>
+            </div>
+        </div> 
+               <div class="menu-item">
+            <img src="https://img.freepik.com/free-photo/vegetarian-pizza_1388-641.jpg?size=626&ext=jpg" alt="ocp">
+            <div class="menu-item-details">
+                <h3>Onion Capsicum Pizza</h3>
+                <p>some slices make you smile</p>
+                <p>Price: 160</p>
+                <p>Preparation Time: 15 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('ocp')">-</button>
+                    <input type="number" id="ocp-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('ocp')">+</button>
+                    <button class="delete-item" onclick="deleteItem('ocp')">Delete</button>
+                </div>
+            </div>
+        </div>
+            <div class="menu-item">
+            <img src="https://carameltintedlife.com/wp-content/uploads/2021/09/paneer-pizza-recipe-1-2.jpg" alt="pp">
+            <div class="menu-item-details">
+                <h3>Paneer Pizza</h3>
+                <p>some slices make you smile</p>
+                <p>Price: 170</p>
+                <p>Preparation Time: 15 minutes</p>
+                <div class="quantity-controls">
+                    <button onclick="decreaseQuantity('pp')">-</button>
+                    <input type="number" id="pp-quantity" value="0" min="0" readonly>
+                    <button onclick="increaseQuantity('pp')">+</button>
+                    <button class="delete-item" onclick="deleteItem('pp')">Delete</button>
+                </div>
+            </div>
+        </div>
+
+            
+     </div>
+    <div id="order-summary">
+        Total Price: Rs<span id="total-price">0.00</span> |
+        Average Preparation Time: <span id="avg-time">0</span> minutes |
+        Total Items: <span id="total-items">0</span>
+        <button id="pay-now" onclick="payNow()">Pay Now</button>
+    </div>
+    
+    <script>
+         const menu = {
+            pizza: { price: 12.99, time: 20 },
+            burger: { price: 8.99, time: 15 },
+            salad: { price: 7.99, time: 10 },
+            Idli: { price: 1.99, time: 4 },
+            vs: { price: 65, time: 3.5 },
+            shake: { price: 25, time: 3 },
+            vs: { price: 65, time: 3.5 },
+            ss: { price: 70, time: 3.5 },
+            cs: { price: 90, time: 3.5 },
+            hc: { price: 25, time: 3 },
+            hhc: { price: 30, time: 3.5 },
+            cc: { price: 50, time: 4.5 },
+            hcc: { price: 60, time: 5 },
+            pb: { price: 75, time: 8 },
+            gs: { price: 55, time: 8.5 },
+            ps: { price: 70, time: 10 },
+            cb: { price: 35, time: 5.5 },
+            ff: { price: 50, time: 5.5 },
+            cpg: { price: 65, time: 7 },
+            cp: { price: 80, time: 5.5 },
+            mm: { price: 60, time: 9.5 },
+            gpm: { price: 70, time: 8.5 },
+            n: { price: 50, time: 8.5 },
+            pn: { price: 70, time: 10.5 },
+            sm: { price: 30, time: 4.5 },
+            fm: { price: 40, time: 6 },
+            kp: { price: 140, time: 15 },
+            ccp: { price: 145, time: 15 },
+            ocp: { price: 160, time: 15 },
+            pp: { price: 170, time: 15 },
+            kp: { price: 140, time: 15 },
+        };
+
+        let order = {};
+
+        function updateOrder() {
+            let totalPrice = 0;
+            let totalTime = 0;
+            let totalItems = 0;
+
+            for (let item in order) {
+                totalPrice += menu[item].price * order[item];
+                
+                // Calculate preparation time based on quantity
+                if (order[item] === 1) {
+                    totalTime += menu[item].time;
+                } else if (order[item] > 1) {
+                    totalTime += menu[item].time + (menu[item].time * 0.35 * (order[item] - 1));
+                }
+                
+                totalItems += order[item];
+            }
+
+            const avgTime = Object.keys(order).length > 0 ? Math.round(totalTime) : 0;
+
+            document.getElementById('total-price').textContent = totalPrice.toFixed(2);
+            document.getElementById('avg-time').textContent = avgTime;
+            document.getElementById('total-items').textContent = totalItems;
+        }
+
+        function increaseQuantity(item) {
+            if (!order[item]) order[item] = 0;
+            order[item]++;
+            document.getElementById(`${item}-quantity`).value = order[item];
+            updateOrder();
+        }
+
+        function decreaseQuantity(item) {
+            if (order[item] && order[item] > 0) {
+                order[item]--;
+                document.getElementById(`${item}-quantity`).value = order[item];
+                if (order[item] === 0) {
+                    delete order[item];
+                }
+                updateOrder();
+            }
+        }
+
+        function deleteItem(item) {
+            if (order[item]) {
+                delete order[item];
+                document.getElementById(`${item}-quantity`).value = 0;
+                updateOrder();
+            }
+        }
+
+        function payNow() {
+            let orderSummary = 'Thank you for your purchase!\n\n';
+            for (let item in order) {
+                orderSummary += `${item.charAt(0).toUpperCase() + item.slice(1)}: ${order[item]}\n`;
+            }
+            orderSummary += `\nTotal Price: $${document.getElementById('total-price').textContent}`;
+            orderSummary += `\nEstimated Average Preparation Time: ${document.getElementById('avg-time').textContent} minutes`;
+            orderSummary += `\nTotal Items: ${document.getElementById('total-items').textContent}`;
+            
+            alert(orderSummary);
+            
+            order = {};
+            for (let item in menu) {
+                document.getElementById(`${item}-quantity`).value = 0;
+            }
+            updateOrder();
+        }
+    </script>
+</body>
+</html>

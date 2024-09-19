@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="home.css">
+    <style>
+        
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ffffff;
+            --accent-color: #cccccc;
+        }
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        header {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                45deg,
+                #000000,
+                #000000 10px,
+                #1a1a1a 10px,
+                #1a1a1a 20px
+            );
+            opacity: 0.1;
+        }
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+        header p {
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+        main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .eatery-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .eatery-card {
+            background-color: var(--secondary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .eatery-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .eatery-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease;
+        }
+        .eatery-card:hover img {
+            filter: grayscale(0%);
+        }
+        .eatery-card h3 {
+            margin: 0.5rem 0;
+            font-size: 1.5rem;
+        }
+        .rating {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        .eatery-type {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .eatery-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(45deg);
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        .eatery-card:hover::before {
+            opacity: 1;
+        }
+        .profile-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .profile-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: var(--secondary-color);
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid var(--accent-color);
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        .close {
+            color: var(--accent-color);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: var(--primary-color);
+        }
+        .profile-info {
+            margin-top: 20px;
+        }
+        .profile-info p {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+        }
+        .profile-info i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        #loginForm {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        #loginForm input {
+            padding: 8px;
+            border: 1px solid var(--accent-color);
+            border-radius: 4px;
+        }
+        #loginForm button, #logoutBtn {
+            padding: 8px;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;           
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        #loginForm button:hover, #logoutBtn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        .about-us-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .about-us-btn:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+        }
+        </style>
+</head>
+<body>
+    <header>
+        <h1><i class='bx bx-restaurant'></i> Cd: Zaika</h1>
+        <p>Flavours that fuel your study delivered with care</p>
+    </header>
+    <button class="profile-btn" onclick="openModal()"><i class='bx bx-user'></i></button>
+    <a href="final about us.html" class="about-us-btn" title="About Us"><i class='bx bx-info-circle'></i></a>
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2><i class='bx bx-user-circle'></i> User Profile</h2>
+            <div id="loginSection">
+                <p>Please log in to view your profile:</p>
+                <form id="loginForm">
+                    <input type="text" id="studentId" placeholder="Student ID" required>
+                    <button type="submit"><i class='bx bx-log-in'></i> Log In</button>
+                </form>
+            </div>
+            <div id="profileSection" style="display: none;">
+                <div class="profile-info">
+                    <p><i class='bx bx-id-card'></i> <strong>Student ID:</strong> <span id="profileStudentId"></span></p>
+                    <p><i class='bx bx-calendar'></i> <strong>Year:</strong> <span id="profileYear"></span></p>
+                    <p><i class='bx bx-book'></i> <strong>Branch:</strong> <span id="profileBranch"></span></p>
+                    <p><i class='bx bx-envelope'></i> <strong>Email:</strong> <span id="profileEmail"></span></p>
+                    <p><i class='bx bx-cart'></i> <strong>Orders Made:</strong> <span id="profileOrders"></span></p>
+                </div>
+                <button id="logoutBtn" onclick="logout()"><i class='bx bx-log-out'></i> Log Out</button>
+            </div>
+        </div>
+    </div>
+    <main>
+        <section class="eatery-list">
+            <div class="eatery-card">
+               <a href="final_menu.html"><img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Infosys.Electronic.City.Cafeteria.JPG"alt="Campus Canteen"></a>
+                <h3><i class='bx bx-restaurant'></i> Campus Canteen</h3>
+                <div class="rating"><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i> 4.0</div>
+                <p>Quick bites and affordable meals for students.</p>
+               <span class="eatery-type" herf="menu.html">Canteen</span>
+            </div>
+            <div class="eatery-card">
+                <img src="https://i.pinimg.com/originals/12/9a/e9/129ae98061ea7c76045537099661424a.jpg" alt="Cozy Corner Cafe">
+                <h3><i class='bx bx-coffee'></i> Cozy Corner Cafe</h3>
+                <div class="rating"><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i> 4.8</div>
+                <p>Artisanal coffee and freshly baked pastries.</p>
+                <span class="eatery-type">Cafe</span>
+            </div>
+            <div class="eatery-card">
+                <img src="https://lh5.googleusercontent.com/p/AF1QipMDr1iZy8sy82CFGVnOFvze8ejLs3UdILvz8Rpo=w1080-k-no" alt="Highway Dhaba">
+                <h3><i class='bx bx-bowl-hot'></i> Highway Dhaba</h3>
+                <div class="rating"><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i> 4.2</div>
+                <p>Authentic roadside cuisine with a homely touch.</p>
+                <span class="eatery-type">Dhaba</span>
+            </div>
+            <div class="eatery-card">
+                <img src="https://lh3.googleusercontent.com/3TyFsXk0ZwlagPOn_TR1XUmB_dbH8xi0s6PK5dNBEwWpnIkyfuRW2V9G4m4zCRM5CktnzBYKkNS-sqlckByMV2S13Q" alt="Campus Canteen">
+                <h3><i class='bx bx-restaurant'></i>lovday</h3>
+                <div class="rating"><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bxs-star'></i><i class='bx bx-star'></i> 4.0</div>
+                <p>Only for couples</p>
+                <span class="eatery-type">foodcoutCumAashiqui</span>
+            </div>
+        </section>
+    </main>
+    <script>
+      const users = {
+    '12345': { year: '3rd Year', branch: 'Computer Science', email: 'student1@example.com', orders: 15 },
+    '67890': { year: '2nd Year', branch: 'Electrical Engineering', email: 'student2@example.com', orders: 8 },
+    '11111': { year: '4th Year', branch: 'Mechanical Engineering', email: 'student3@example.com', orders: 22 }
+};
+
+let currentUser = null;
+
+function openModal() {
+    document.getElementById('profileModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('profileModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    if (event.target == document.getElementById('profileModal')) {
+        closeModal();
+    }
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const studentId = document.getElementById('studentId').value;
+    login(studentId);
+});
+
+function login(studentId) {
+    if (users[studentId]) {
+        currentUser = { id: studentId, ...users[studentId] };
+        updateProfileDisplay();
+        localStorage.setItem('currentUserId', studentId);
+    } else {
+        alert('User not found. Please try again.');
+    }
+}
+
+function updateProfileDisplay() {
+    if (currentUser) {
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('profileSection').style.display = 'block';
+        document.getElementById('profileStudentId').textContent = currentUser.id;
+        document.getElementById('profileYear').textContent = currentUser.year;
+        document.getElementById('profileBranch').textContent = currentUser.branch;
+        document.getElementById('profileEmail').textContent = currentUser.email;
+        document.getElementById('profileOrders').textContent = currentUser.orders;
+    } else {
+        document.getElementById('loginSection').style.display = 'block';
+        document.getElementById('profileSection').style.display = 'none';
+    }
+}
+
+function logout() {
+    currentUser = null;
+    updateProfileDisplay();
+    document.getElementById('studentId').value = '';
+    localStorage.removeItem('currentUserId');
+}
+
+// Check for stored user ID on page load
+window.onload = function() {
+    const storedUserId = localStorage.getItem('currentUserId');
+    if (storedUserId) {
+        login(storedUserId);
+    }
+}
+    </script>
+</body>
+</html>

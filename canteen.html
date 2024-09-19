@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canteen Owner Menu Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .menu-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding-bottom: 100px;
+        }
+        .menu-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .menu-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+        .menu-item-details {
+            flex-grow: 1;
+        }
+        .menu-item h3 {
+            margin: 0 0 10px 0;
+        }
+        .menu-item p {
+            margin: 0 0 5px 0;
+        }
+        .delete-item {
+            background-color: #000000;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        #add-item-form {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-top: 20px;
+        }
+        #add-item-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #add-item-form input[type="submit"] {
+            background-color: #000000;
+            color: white;
+            cursor: pointer;
+        }
+        .menu-item img {
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+    }
+    .menu-item:hover img {
+    filter: grayscale(0%);
+    }
+    body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.menu-container {
+    flex: 1;
+}
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+}
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
+}
+.menu-item {
+    transition: all 0.3s ease;
+}
+.menu-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <h1>Canteen Management</h1>
+        <div id="menu-list"></div>
+        
+        <div id="add-item-form">
+            <h2>Add New Item</h2>
+            <form id="new-item-form">
+                <input type="text" id="item-name" placeholder="Item Name" required>
+                <input type="text" id="item-description" placeholder="Item Description" required>
+                <input type="number" id="item-price" placeholder="Price" required>
+                <input type="number" id="item-prep-time" placeholder="Preparation Time (minutes)" required>
+                <input type="text" id="item-image" placeholder="Image URL" required>
+                <input type="submit" value="Add Item">
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Canteen Management Company</p>
+        <p>Contact us: <a href="mailto:contact@canteenmanagement.com">cd.ugi@gmail.com</a> | Phone: (+91) 8400976494</p>
+    </footer>
+
+    <script>
+        // Initial menu items
+        let menuItems = [
+            { name: "Vanilla Shake", description: "Fuel your potential with every sip", profit: 65, prepTime: 4, image: "https://images.immediate.co.uk/production/volatile/sites/30/2020/12/classic-vanilla-milkshake-9e7745f.jpg?quality=90&resize=544,494" },
+            { name: "Hot Coffee", description: "Relax your mind with a sip of coffee", profit: 25, prepTime: 3, image: "https://media.gettyimages.com/id/1133425883/photo/espresso-coffee-maker.jpg?s=612x612&w=0&k=20&c=I3FB-elrUmfWF9fbrawxmqEjdNGD9mWTBs_6oU6TzpM=" },
+            { name: "Paneer Burger", description: "Sizzle,Stack,and Savor", profit: 75, prepTime: 10, image: "https://celebrationgeneration.com/wp-content/uploads/2013/05/Paneer-Burgers-8.jpg" }
+        ];
+
+        // Function to display menu items
+        function displayMenu() {
+            let menuHtml = '';
+            for (let i = 0; i < menuItems.length; i++) {
+                let item = menuItems[i];
+                menuHtml += `
+                    <div class="menu-item">
+                        <img src="${item.image}" alt="${item.name}">
+                        <div class="menu-item-details">
+                            <h3>${item.name}</h3>
+                            <p>${item.description}</p>
+                            <p>Price: Rs ${item.profit}</p>
+                            <p>Preparation Time: ${item.prepTime} minutes</p>
+                            <button class="delete-item" onclick="deleteItem(${i})">Delete</button>
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('menu-list').innerHTML = menuHtml;
+        }
+
+        
+        function deleteItem(index) {
+            menuItems.splice(index, 1);
+            displayMenu();
+        }
+
+        
+        document.getElementById('new-item-form').onsubmit = function(e) {
+            e.preventDefault();
+            let newItem = {
+                name: document.getElementById('item-name').value,
+                description: document.getElementById('item-description').value,
+                profit: Number(document.getElementById('item-price').value),
+                prepTime: Number(document.getElementById('item-prep-time').value),
+                image: document.getElementById('item-image').value
+            };
+            menuItems.push(newItem);
+            displayMenu();
+            this.reset();
+        };
+
+        
+        displayMenu();
+    </script>
+</body>
+</html>
