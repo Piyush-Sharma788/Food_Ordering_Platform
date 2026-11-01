@@ -141,5 +141,16 @@ Per `GEMINI.md` and `companyguielsline.md`, the platform is being transitioned i
 
 1. **Lost Menu Items or Changed Prices**: All 20+ original menu items from `final_menu.html` and eateries from `Final_home.html` are codified directly into database seeds and default data fixtures.
 2. **Loss of Static Files**: Original `.html` files are retained in the repository so git history and legacy references remain completely intact.
-3. **Offline or Missing Cloud Credentials**: Dual AI adapters, S3 storage, and Puppeteer are designed with graceful offline mock fallbacks so the application functions seamlessly in all environments without crashes.
+3. **Offline or Missing Cloud Credentials**: Dual AI adapters, S3 storage, and document generation are designed with graceful offline mock fallbacks so the application functions seamlessly in all environments without crashes.
+
+---
+
+## 6. Modernization Evolution: Transition to Django & Python
+
+Following explicit architectural direction, the platform was transitioned to a monolithic full-stack **Django 5 & Python 3.11** architecture:
+- **Database**: SQLite with Django ORM migrations and atomic transactions.
+- **Receipt Generation**: Upgraded to ReportLab for native high-resolution vector PDF generation.
+- **API**: Django REST Framework (DRF) endpoints.
+- **AI & Cloud Storage**: Native Python SDKs for OpenAI, Google Gemini, and AWS S3 (`boto3`).
+- **Cleanup**: Legacy Node.js and Next.js dependencies (`package.json`, `package-lock.json`, `src/`) were retired, eliminating all npm vulnerabilities and Dependabot alerts.
 

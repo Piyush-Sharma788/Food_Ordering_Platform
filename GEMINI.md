@@ -14,22 +14,19 @@ Treat `companyguielsline.md` as the primary reference for product requirements, 
 
 ## 2. Mandatory Technology Stack
 
-Use the following target stack:
+Per user directive, the modernized technology stack is:
 
-- Frontend: Next.js, React, TypeScript
-- Backend: Node.js and TypeScript
-- API: REST APIs
-- Database: MongoDB
-- AI integration: OpenAI API and Google Generative AI
-- File storage: AWS S3
-- Browser automation and document generation: Puppeteer
-- Version control: Git and GitHub
+- **Framework & Backend**: Django 5.1+ and Python 3.11+
+- **Frontend / Presentation**: Django Templates, HTML5, CSS3, JavaScript (preserving monochrome aesthetic)
+- **API Layer**: Django REST Framework (DRF) resource-oriented REST APIs
+- **Database & ORM**: SQLite via Django ORM (with transactions and atomic updates)
+- **AI Integration**: OpenAI API (`gpt-4o-mini`) and Google Generative AI (`gemini-1.5-flash`) via reusable server-side Python adapters
+- **File Storage**: AWS S3 (`boto3`) with automatic local fallback
+- **Document & Receipt Generation**: ReportLab vector PDF generator (with printable HTML fallback)
+- **Authentication**: Django Authentication & Sessions with RBAC (`customer`, `canteen_owner`, `admin`)
+- **Version Control**: Git and GitHub
 
 Use maintained, compatible dependencies and verify their compatibility before upgrading.
-
-Use Next.js Route Handlers for REST APIs where appropriate. Introduce a separate Node.js backend, such as Express, only when the architecture or requirements justify it.
-
-Do not introduce redundant frameworks, databases, or services.
 
 ## 3. Mandatory Workflow
 
@@ -66,71 +63,64 @@ Use the existing repository conventions where they are sound. Introduce abstract
 
 Avoid duplicated business logic, circular dependencies, oversized components, and unnecessary microservices.
 
-## 5. TypeScript and Coding Standards
+## 5. Python and Coding Standards
 
-- Prefer strict TypeScript and explicit types.
-- Avoid `any` and unsafe type assertions.
+- Prefer clean, idiomatic Python 3 (PEP 8) with type annotations.
 - Use descriptive names and consistent naming conventions.
-- Keep functions focused and reusable.
-- Separate business logic from presentation components.
-- Use shared utilities where appropriate.
-- Handle asynchronous operations and errors correctly.
+- Keep functions and methods focused, modular, and reusable.
+- Separate business logic from Django views and presentation templates.
+- Use shared utilities and service classes where appropriate.
+- Handle exceptions, external API failures, and edge cases gracefully.
 - Remove unused imports, dead code, and debugging statements.
-- Follow the existing formatter and linting configuration.
-- Avoid suppressing compiler or lint errors to bypass problems.
-- Add comments for non-obvious decisions, not self-explanatory code.
+- Avoid suppressing exceptions to hide underlying issues.
+- Add comments and docstrings for non-obvious business decisions.
 
 ## 6. Frontend Development
 
-Use Next.js App Router and React according to the existing architecture.
+Use Django Templates, HTML5, CSS3, and JavaScript adhering to the platform's visual design.
 
 Requirements:
 
-- Build reusable and accessible UI components.
-- Use Server Components by default where suitable.
-- Add `'use client'` only when client-side interactivity requires it.
-- Keep secrets and privileged operations on the server.
-- Implement loading, empty, error, and success states.
-- Use responsive layouts for mobile, tablet, and desktop.
-- Optimize image delivery, rendering, and page performance.
-- Provide accessible forms, keyboard navigation, and semantic HTML.
-- Keep API communication separate from complex UI business logic.
-- Avoid unnecessary client-side JavaScript and duplicate data fetching.
+- Build modular, maintainable Django templates extending `base.html`.
+- Preserve the signature monochrome high-contrast aesthetic (`#000000`, `#ffffff`, `#0d9488`).
+- Keep secrets, API tokens, and privileged operations strictly on the server.
+- Implement loading, empty, error, and success states in the UI.
+- Use responsive layouts for mobile, tablet, and desktop viewports.
+- Optimize asset loading, image delivery, and rendering performance.
+- Provide accessible forms, CSRF protection, and semantic HTML.
+- Keep client-side interactions cleanly organized in `static/js/zaika.js`.
 - Never present mock data or non-functional controls as completed features.
 
 Preserve useful existing branding and improve the UI consistently rather than redesigning randomly.
 
 ## 7. Backend Development
 
-Use Node.js and TypeScript for server-side logic.
+Use Django 5 and Python 3 for server-side logic and REST APIs.
 
 Organize the backend into appropriate modules:
 
-- Routes or Route Handlers
-- Controllers where useful
-- Business services
-- Data-access modules
-- Database models and schemas
-- Request validators
-- Authentication and authorization middleware
-- Error-handling utilities
-- Logging and observability
-- External integration services
+- `zaika/urls.py` — URL routing and dispatchers
+- `zaika/views_ui.py` — Template rendering views
+- `zaika/views_api.py` — DRF API views and action handlers
+- `zaika/services/` — Business services (AI, PDF receipts, S3 storage)
+- `zaika/models.py` — Django ORM models, relations, and indexes
+- `zaika/serializers.py` — DRF request/response serializers
+- `zaika/admin.py` — Django administration registrations
+- `zaika/tests.py` — Automated test suite
 
 ### Backend requirements
 
-- Validate all untrusted request inputs.
+- Validate all untrusted request inputs via DRF serializers or Django forms.
 - Use appropriate HTTP methods and status codes.
-- Return consistent JSON responses.
-- Implement centralized error handling.
-- Enforce authorization on every protected operation.
+- Return consistent JSON responses from API endpoints.
+- Enforce authorization and RBAC on every protected operation.
 - Verify resource ownership before modifying data.
-- Add pagination, filtering, and sorting where appropriate.
-- Prevent duplicate order submissions.
-- Handle concurrent updates and partial failures.
-- Avoid exposing stack traces, credentials, or internal database details.
-- Document API contracts.
-- Keep controllers thin and business logic in services.
+- Prevent duplicate order submissions and race conditions.
+- Handle concurrent updates, stock availability, and partial failures.
+- Avoid exposing stack traces, credentials, or internal details in responses.
+- Keep view handlers thin and domain logic in models or services.
+
+Do not duplicate business rules across the frontend and backend.
 
 Do not duplicate business rules across the frontend and backend.
 
@@ -172,27 +162,23 @@ Requirements:
 - Use OpenAPI documentation where practical.
 - Never expose internal database fields unnecessarily.
 
-## 9. MongoDB
+## 9. SQLite and Django ORM
 
-Use MongoDB with either Mongoose or the native MongoDB driver, following the established project architecture.
+Use SQLite via Django's object-relational mapping (ORM) for persistent data storage.
 
 Requirements:
 
-- Define schemas and validation rules appropriate to the data.
-- Add indexes for common queries.
-- Avoid unbounded queries and inefficient database access.
-- Validate data at API boundaries.
-- Enforce resource ownership.
-- Use atomic updates for concurrency-sensitive operations.
-- Use transactions where supported and required for multi-document consistency.
-- Handle duplicate keys, missing records, and database failures.
-- Keep monetary calculations consistent.
-- Protect inventory and order processing against race conditions.
-- Avoid destructive schema changes without explicit approval.
+- Define clean Django models with field validation, choices, and default values.
+- Add database indexes (`db_index=True`, `indexes = [...]`) on frequently filtered columns (e.g., `status`, `student_id`, `category`).
+- Use atomic transactions (`@transaction.atomic`) for multi-step order placement and balance/inventory modifications.
+- Handle model constraints and duplicate errors gracefully.
+- Keep monetary calculations consistent using Decimal fields or precision floats.
+- Protect order processing against race conditions and concurrent modifications.
+- Manage database schema changes strictly via versioned Django migrations (`python manage.py makemigrations`).
 
-Potential collections include users, restaurants, menu items, carts, orders, reviews, addresses, and audit records, depending on the actual requirements.
+Collections/tables include Users, Restaurants, MenuItems, Orders, OrderItems, OrderStatusHistory, and Reviews.
 
-Never expose database credentials or sensitive document fields to the client.
+Never expose database credentials or sensitive model attributes to the client.
 
 ## 10. Authentication and Authorization
 
@@ -254,82 +240,76 @@ Requirements:
 
 Never expose AWS credentials or grant unrestricted bucket access.
 
-## 13. Puppeteer
+## 13. Document and Receipt Generation
 
-Use Puppeteer only for justified browser automation and server-side document generation.
+Use ReportLab for server-side generation of high-resolution vector PDF receipts and order invoices.
 
 Requirements:
 
-- Apply execution timeouts and resource limits.
-- Restrict navigation to authorized destinations.
-- Prevent SSRF and access to internal services.
-- Clean up browser instances and temporary files.
-- Validate generated documents before making them available.
-- Handle failed jobs and concurrent execution safely.
-- Avoid using browser automation when a normal API call is more appropriate.
-- Never expose unrestricted browser debugging endpoints.
+- Generate byte-stream PDFs dynamically without disk leaks.
+- Ensure proper PDF headers (`%PDF-`) and printable layout standards.
+- Include order metadata, itemized breakdowns, subtotal, 5% campus tax, and total.
+- Provide a printable HTML receipt fallback at `/orders/<order_number>/receipt/html/`.
+- Validate user ownership or kitchen staff authorization before serving receipts.
 
 ## 14. Security and Reliability
 
 Follow secure development practices throughout the application.
 
 - Validate and normalize untrusted inputs.
-- Prevent NoSQL injection and mass assignment.
-- Configure CORS and security headers appropriately.
-- Use secure cookies and authentication controls.
+- Prevent SQL injection via Django ORM parameterized queries.
+- Configure security headers, CSRF middleware, and XSS protection.
+- Use secure cookies and session controls.
 - Apply rate limiting to sensitive endpoints.
-- Protect against SSRF and XSS.
-- Use CSRF protection where applicable.
-- Enforce file-upload restrictions.
-- Use least-privilege database and AWS credentials.
-- Avoid logging passwords, tokens, API keys, or unnecessary personal information.
+- Protect against SSRF and unauthorized file uploads.
+- Enforce file-upload restrictions and MIME validation.
+- Use least-privilege AWS credentials.
+- Avoid logging passwords, tokens, API keys, or sensitive personal data.
 - Keep secrets out of Git.
 - Do not disable security checks to make features work.
 
 ## 15. Testing and Quality Assurance
 
-Use the repository's existing testing framework or introduce a suitable one if required.
+Use Django's automated test framework (`python manage.py test`).
 
 Test:
 
-- Authentication and authorization.
-- REST API validation and error handling.
-- Restaurant and menu management.
-- Cart calculations and checkout.
+- Authentication and authorization with Student ID and roles.
+- REST API validation and error handling via DRF.
+- Restaurant and menu item retrieval and filtering.
+- Dynamic preparation time algorithm calculations:
+  $$\text{PrepTime} = \begin{cases} \text{baseTime}, & \text{if } \text{qty} = 1 \\ \text{baseTime} + \text{baseTime} \times 0.35 \times (\text{qty} - 1), & \text{if } \text{qty} > 1 \end{cases}$$
+- Order subtotal, 5% tax, delivery fee, and grand total verification.
 - Order creation and status transitions.
-- Pricing, discounts, and inventory constraints.
-- Duplicate submissions and concurrent updates.
-- AI provider failures and invalid outputs.
-- S3 permissions and upload validation.
-- Critical customer and administrative workflows.
+- ReportLab PDF generation byte integrity.
+- AI chat provider fallback logic.
+- Template rendering and response status codes.
 
 Before declaring a task complete:
 
-1. Run relevant tests.
-2. Run TypeScript checks.
-3. Run linting.
-4. Run the production build where feasible.
-5. Review the Git diff.
-6. Report actual results.
+1. Run `python manage.py check`.
+2. Run `python manage.py test`.
+3. Review the Git diff.
+4. Report actual results.
 
 Never claim that a test or build passed if it was not executed successfully.
 
 ## 16. Environment Configuration
 
-Maintain `.env.example` with the actual environment variable names required by the implementation.
+Maintain `.env.example` with the actual environment variable names required by the Django implementation.
 
-Potential variables include:
+Variables include:
 
-- `MONGODB_URI`
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG`
 - `OPENAI_API_KEY`
 - `GOOGLE_GENERATIVE_AI_API_KEY`
 - `AWS_REGION`
 - `AWS_S3_BUCKET`
-- Appropriate AWS credential configuration
-- Authentication secrets
-- Application base URL
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
 
-These are examples. Verify the variable names expected by the application.
+Never overwrite `.env`, reveal secret values, or commit production credentials.
 
 Never overwrite `.env`, reveal secret values, or commit production credentials.
 
