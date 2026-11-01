@@ -1,0 +1,359 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Cd: Zaika — Campus Food Ordering Platform{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/zaika.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header class="zaika-header">
+    <div class="header-inner">
+      <a href="{% url 'home' %}" class="brand-link">
+        <div class="brand-badge"><i class="fas fa-utensils"></i></div>
+        <div>
+          <span class="brand-text">Cd: <span>Zaika</span></span>
+          <span class="brand-sub">Campus Food Platform</span>
+        </div>
+      </a>
+
+      <nav class="main-nav">
+        <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+        <a href="{% url 'menu' %}" class="{% if request.resolver_match.url_name == 'menu' %}active{% endif %}">Menu</a>
+        <a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About Us</a>
+        {% if user.is_authenticated and user.role in 'canteen_owner,admin' or user.is_staff %}
+        <a href="{% url 'canteen_management' %}" style="background: #1f2937; padding: 4px 10px; border-radius: 6px; border: 1px solid #374151; color: #5eead4;">
+          <i class="fas fa-store"></i> Canteen Portal
+        </a>
+        {% endif %}
+      </nav>
+
+      <div class="header-actions">
+        <!-- AI Assistant Trigger -->
+        <button class="btn-ai-sparkle" onclick="openDrawer('ai-chat-drawer')" title="Zaika AI Culinary Advisor">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          <span>Ask AI</span>
+        </button>
+
+        <!-- Cart Tray Trigger -->
+        <button class="btn-cart-toggle" onclick="openDrawer('cart-drawer')" title="View Food Tray">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-count-badge" id="header-cart-count" style="display: none;">0</span>
+        </button>
+
+        <!-- Profile or Login Trigger -->
+        {% if user.is_authenticated %}
+        <button class="btn-profile-pill" onclick="openModal('profile-modal')">
+          <i class="fas fa-user-circle" style="color: #0d9488;"></i>
+          <span>{{ user.student_id }}</span>
+        </button>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn-login-pill">
+          <i class="fas fa-arrow-right-to-bracket"></i> Login
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main style="flex: 1; padding-bottom: 70px;">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Floating Order Summary Bar (Matching final_menu.html) -->
+  <div class="order-summary-bar" id="order-summary-bar">
+    <div class="summary-inner">
+      <div class="summary-stats">
+        <div>Total Price: <span class="total-val">Rs. <span id="bar-total-price">0.00</span></span></div>
+        <span style="color: #444;">|</span>
+        <div><i class="fas fa-clock" style="color: #0d9488;"></i> Avg Prep Time: <b>~<span id="bar-avg-time">0</span> mins</b></div>
+        <span style="color: #444;">|</span>
+        <div>Total Items: <b><span id="bar-total-items">0</span></b></div>
+      </div>
+      <button class="btn-pay-now" onclick="triggerCheckout()">
+        Pay Now / Checkout <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Cart Tray Drawer -->
+  <div class="drawer-overlay" id="cart-drawer" onclick="if(event.target === this) closeDrawer('cart-drawer')">
+    <div class="drawer-panel">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-shopping-bag" style="color: #0d9488;"></i>
+          <span>Your Food Tray</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeDrawer('cart-drawer')">&times;</button>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; padding: 16px;" id="cart-drawer-items">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div id="cart-drawer-footer" style="padding: 16px; border-top: 1px solid #e5e7eb; background: #fafafa; display: none;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 6px;">
+          <span>Items Subtotal:</span>
+          <span style="font-weight: 700;" id="drawer-subtotal">Rs. 0.00</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 12px;">
+          <span>Estimated Prep Time:</span>
+          <span style="font-weight: 700; color: #0d9488;" id="drawer-time">~0 mins</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px; border-top: 1px solid #ddd; margin-bottom: 12px;">
+          <span style="font-size: 0.8rem; color: #666;">Total Due:</span>
+          <span style="font-size: 1.3rem; font-weight: 900; color: #000;" id="drawer-total">Rs. 0.00</span>
+        </div>
+        <button class="btn-pay-now" style="width: 100%; text-align: center; padding: 10px; background: #000; color: #fff;" onclick="triggerCheckout()">
+          Proceed to Checkout
+        </button>
+        <button onclick="CartManager.clearCart()" style="width: 100%; border: none; background: none; color: #ef4444; font-size: 0.75rem; margin-top: 8px; cursor: pointer;">
+          Clear Food Tray
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div class="modal-overlay" id="checkout-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-check-circle" style="color: #0d9488;"></i>
+          <span>Confirm & Place Order</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('checkout-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <form onsubmit="submitOrder(event)">
+          {% if not user.is_authenticated %}
+          <div style="background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 14px;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Student ID (For Campus Account Billing)</label>
+            <input type="text" id="checkout-student-id" required placeholder="e.g. 12345 or student1" style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
+            <p style="font-size: 0.7rem; color: #666; margin-top: 4px;">Will be activated and logged into your campus dining account automatically.</p>
+          </div>
+          {% else %}
+          <div style="background: #f9fafb; padding: 10px 14px; border-radius: 8px; border: 1px solid #e5e7eb; margin-bottom: 14px; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="color: #666;">Authenticated Student:</span><br/>
+              <b>{{ user.get_full_name|default:user.username }} ({{ user.student_id }})</b>
+            </div>
+            <span style="color: #0d9488; font-weight: 700;"><i class="fas fa-shield-halved"></i> Verified</span>
+          </div>
+          {% endif %}
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Fulfillment Mode</label>
+            <select id="checkout-delivery-type" onchange="triggerCheckout()" style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem; background: #fff;">
+              <option value="pickup">Campus Counter Pickup (Free)</option>
+              <option value="campus_delivery">Hostel / Campus Room Delivery (+Rs. 20.00)</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Delivery Location / Pickup Station</label>
+            <input type="text" id="checkout-delivery-location" value="Campus Canteen Counter" style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Kitchen Instructions (Optional)</label>
+            <input type="text" id="checkout-instructions" placeholder="e.g. Less spicy, extra paper napkins" style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.85rem;">
+          </div>
+
+          <!-- Bill Breakdown -->
+          <div style="background: #f9fafb; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 0.8rem; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>Subtotal:</span>
+              <span id="checkout-subtotal">Rs. 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>Campus Tax (5%):</span>
+              <span id="checkout-tax">Rs. 0.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span>Estimated Prep:</span>
+              <span id="checkout-time" style="font-weight: 700; color: #0d9488;">~0 mins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1rem; font-weight: 800; padding-top: 8px; border-top: 1px solid #ddd; margin-top: 6px;">
+              <span>Grand Total:</span>
+              <span id="checkout-grand-total" style="color: #0d9488;">Rs. 0.00</span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button type="button" onclick="closeModal('checkout-modal')" style="flex: 1; padding: 10px; border: 1px solid #ccc; background: #fff; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+              Back
+            </button>
+            <button type="submit" id="checkout-submit-btn" style="flex: 2; padding: 10px; border: none; background: #000; color: #fff; font-weight: 800; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+              Confirm Order
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Profile Modal (Matching Final_home.html) -->
+  <div class="modal-overlay" id="profile-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-id-card" style="color: #0d9488;"></i>
+          <span>Student Profile</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('profile-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        {% if user.is_authenticated %}
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="width: 56px; height: 56px; border-radius: 50%; background: #000; color: #5eead4; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 900; margin-bottom: 8px;">
+            {{ user.student_id|slice:":1"|upper }}
+          </div>
+          <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 2px;">{{ user.get_full_name|default:user.username }}</h3>
+          <span style="background: #e6fffa; color: #0d9488; font-size: 0.75rem; font-weight: 700; padding: 2px 10px; border-radius: 12px; text-transform: uppercase;">
+            {{ user.role }}
+          </span>
+        </div>
+
+        <div style="background: #f9fafb; padding: 14px; border-radius: 8px; border: 1px solid #e5e7eb; font-size: 0.85rem; line-height: 1.8;">
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #666;"><i class="fas fa-id-badge"></i> Student ID:</span>
+            <b>{{ user.student_id }}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #666;"><i class="fas fa-graduation-cap"></i> Academic Year:</span>
+            <b>{{ user.year }}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #666;"><i class="fas fa-book-open"></i> Branch:</span>
+            <b>{{ user.branch }}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span style="color: #666;"><i class="fas fa-envelope"></i> Email:</span>
+            <b>{{ user.email }}</b>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 6px; margin-top: 6px;">
+            <span style="color: #666;"><i class="fas fa-receipt" style="color: #0d9488;"></i> Orders Made:</span>
+            <b style="color: #0d9488; font-size: 1rem;">{{ user.order_count }}</b>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px; display: flex; gap: 8px;">
+          <a href="{% url 'logout' %}" style="flex: 1; text-align: center; padding: 10px; background: #000; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 0.85rem;">
+            <i class="fas fa-arrow-right-from-bracket"></i> Log Out
+          </a>
+        </div>
+        {% else %}
+        <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">Sign in with your Student ID to view completed orders and dietary profile.</p>
+        <a href="{% url 'login' %}" style="display: block; text-align: center; padding: 10px; background: #000; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 700; font-size: 0.85rem;">
+          Go to Login Screen
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Assistant Drawer -->
+  <div class="drawer-overlay" id="ai-chat-drawer" onclick="if(event.target === this) closeDrawer('ai-chat-drawer')">
+    <div class="drawer-panel">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-wand-magic-sparkles" style="color: #5eead4;"></i>
+          <span>Zaika AI Assistant</span>
+        </div>
+        <button class="modal-close-btn" onclick="closeDrawer('ai-chat-drawer')">&times;</button>
+      </div>
+
+      <div style="flex: 1; overflow-y: auto; padding: 16px;" id="ai-messages-container">
+        <!-- Messages rendered by JS -->
+      </div>
+
+      <div id="ai-chat-loading" style="display: none; padding: 8px 16px; font-size: 0.75rem; color: #666; font-style: italic;">
+        <i class="fas fa-spinner fa-spin" style="color: #0d9488;"></i> Checking campus menu...
+      </div>
+
+      <!-- Quick prompts -->
+      <div style="padding: 8px 14px; background: #fff; border-top: 1px solid #e5e7eb; display: flex; flex-wrap: wrap; gap: 6px;">
+        <button onclick="AIChatController.send('Quick bite under 5 mins')" style="font-size: 0.7rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 12px; padding: 4px 10px; cursor: pointer;">
+          Quick bite under 5 mins
+        </button>
+        <button onclick="AIChatController.send('Caffeine boost for study')" style="font-size: 0.7rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 12px; padding: 4px 10px; cursor: pointer;">
+          Caffeine boost
+        </button>
+        <button onclick="AIChatController.send('Affordable lunch under Rs. 75')" style="font-size: 0.7rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 12px; padding: 4px 10px; cursor: pointer;">
+          Budget lunch
+        </button>
+        <button onclick="AIChatController.send('Best cheese pizza?')" style="font-size: 0.7rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 12px; padding: 4px 10px; cursor: pointer;">
+          Kulhad Pizza
+        </button>
+      </div>
+
+      <div style="padding: 12px; background: #fff; border-top: 1px solid #e5e7eb;">
+        <form onsubmit="event.preventDefault(); AIChatController.send();" style="display: flex; gap: 8px;">
+          <input type="text" id="ai-chat-input" placeholder="Ask for meals, coffees, prep times..." style="flex: 1; padding: 8px 12px; border: 1px solid #ccc; border-radius: 20px; font-size: 0.85rem; outline: none;">
+          <button type="submit" style="background: #000; color: #fff; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer;">
+            <i class="fas fa-paper-plane" style="font-size: 0.8rem;"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Footer (Matching canteen.html & Final_home.html) -->
+  <footer class="zaika-footer">
+    <div class="footer-inner">
+      <div>
+        <h4 style="color: #fff; font-size: 1.1rem; font-weight: 800; margin-bottom: 8px;">Cd: <span style="color: #5eead4;">Zaika</span></h4>
+        <p style="color: #9ca3af; font-size: 0.8rem; line-height: 1.6; margin-bottom: 12px;">
+          Flavours that fuel your study delivered with care. Real-time kitchen tracking, verified campus pricing, and fast counter pickups.
+        </p>
+        <div style="font-size: 0.75rem; color: #9ca3af; line-height: 1.8;">
+          <div><i class="fas fa-envelope" style="color: #5eead4; margin-right: 6px;"></i> <a href="mailto:cd.ugi@gmail.com" style="color: #9ca3af; text-decoration: none;">cd.ugi@gmail.com</a></div>
+          <div><i class="fas fa-phone" style="color: #5eead4; margin-right: 6px;"></i> (+91) 8400976494</div>
+          <div><i class="fas fa-location-dot" style="color: #5eead4; margin-right: 6px;"></i> Central Campus Food Court & Canteen</div>
+        </div>
+      </div>
+
+      <div>
+        <h5 style="color: #fff; font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; text-transform: uppercase;">Campus Links</h5>
+        <ul style="list-style: none; font-size: 0.8rem; line-height: 2;">
+          <li><a href="{% url 'home' %}" style="color: #9ca3af; text-decoration: none;">Campus Eateries</a></li>
+          <li><a href="{% url 'menu' %}" style="color: #9ca3af; text-decoration: none;">Full 26-Dish Menu</a></li>
+          <li><a href="{% url 'about' %}" style="color: #9ca3af; text-decoration: none;">About Leadership Team</a></li>
+          <li><a href="{% url 'login' %}" style="color: #9ca3af; text-decoration: none;">Student / Staff Sign In</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h5 style="color: #fff; font-size: 0.85rem; font-weight: 700; margin-bottom: 10px; text-transform: uppercase;">Kitchen Hours</h5>
+        <p style="font-size: 0.8rem; color: #9ca3af; line-height: 1.6;">
+          Monday – Sunday: 8:00 AM – 10:30 PM<br/>
+          Smart prep time automatically adjusts during lecture breaks.
+        </p>
+        <div style="margin-top: 12px;">
+          <span style="display: inline-block; background: #064e3b; color: #a7f3d0; border: 1px solid #047857; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 4px;">
+            ● Canteen Kitchen Online
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; {% now "Y" %} Cd: Zaika. All rights reserved.</span>
+      <span>Built with <i class="fas fa-heart" style="color: #ef4444;"></i> for campus students</span>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/zaika.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
+

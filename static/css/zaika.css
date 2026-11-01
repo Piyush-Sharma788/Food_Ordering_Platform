@@ -1,0 +1,392 @@
+/* ==============================================================================
+   Cd: Zaika — High-Contrast Modern Campus Monochrome Design System
+   ============================================================================== */
+
+:root {
+  --primary-color: #000000;
+  --secondary-color: #ffffff;
+  --accent-color: #0d9488;
+  --accent-light: #ccfbf1;
+  --bg-color: #f8f9fa;
+  --border-color: #e5e7eb;
+  --text-muted: #6b7280;
+  --card-bg: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: #111111;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.5;
+}
+
+/* Grayscale hover effect from legacy design */
+.grayscale-card-img {
+  filter: grayscale(100%);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.grayscale-card-img:hover {
+  filter: grayscale(0%);
+  transform: scale(1.03);
+}
+
+/* Global Navigation */
+header.zaika-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: #000000;
+  color: #ffffff;
+  border-bottom: 1px solid #222222;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.brand-badge {
+  width: 36px;
+  height: 36px;
+  background-color: #ffffff;
+  color: #000000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.brand-text {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.brand-text span {
+  color: var(--accent-color);
+}
+
+.brand-sub {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: #999999;
+  letter-spacing: 1px;
+  font-weight: 600;
+  display: block;
+}
+
+nav.main-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+nav.main-nav a {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.2s ease;
+}
+
+nav.main-nav a:hover,
+nav.main-nav a.active {
+  color: var(--accent-color);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-ai-sparkle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #111111;
+  color: #5eead4;
+  border: 1px solid rgba(13, 148, 136, 0.5);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ai-sparkle:hover {
+  background-color: #222222;
+  box-shadow: 0 0 10px rgba(13, 148, 136, 0.3);
+}
+
+.btn-cart-toggle {
+  position: relative;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-count-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 10px;
+  font-weight: 900;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000000;
+}
+
+.btn-profile-pill {
+  background-color: #222222;
+  color: #ffffff;
+  border: 1px solid #333333;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.btn-login-pill {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.btn-login-pill:hover {
+  background-color: #e5e7eb;
+}
+
+/* Modals and Drawers */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 2px solid #000000;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #cccccc;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  color: #ffffff;
+}
+
+.modal-body {
+  padding: 20px;
+}
+
+/* Slide Drawer */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: flex-end;
+}
+
+.drawer-overlay.active {
+  display: flex;
+}
+
+.drawer-panel {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 420px;
+  height: 100%;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: drawerSlide 0.25s ease-out;
+}
+
+@keyframes drawerSlide {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Floating Bottom Order Summary Bar */
+.order-summary-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 35;
+  background-color: #000000;
+  color: #ffffff;
+  padding: 12px 20px;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.order-summary-bar.active {
+  display: block;
+}
+
+.summary-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.summary-stats {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 0.9rem;
+}
+
+.summary-stats .total-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.btn-pay-now {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #ffffff;
+  padding: 8px 22px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.btn-pay-now:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Footer */
+footer.zaika-footer {
+  margin-top: auto;
+  background-color: #000000;
+  color: #9ca3af;
+  border-top: 1px solid #1f2937;
+  padding: 40px 1rem 20px;
+  font-size: 0.85rem;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 30px;
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 30px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid #1f2937;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+}
+

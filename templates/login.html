@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Student & Staff Login — Cd: Zaika{% endblock %}
+
+{% block extra_head %}
+<style>
+  .auth-wrapper {
+    max-width: 840px;
+    margin: 40px auto;
+    background: #fff;
+    border: 2px solid #000;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 768px) {
+    .auth-wrapper {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="min-height: calc(100vh - 200px); display: flex; align-items: center; justify-content: center; padding: 20px;">
+  <div class="auth-wrapper">
+    <!-- Left Banner (Matching FINAL_LOGIN.html) -->
+    <div style="background: #000; color: #fff; padding: 40px; display: flex; flex-direction: column; justify-content: space-between; position: relative;">
+      <div>
+        <span style="display: inline-block; background: #111; color: #5eead4; border: 1px solid #333; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px;">
+          Cd: Zaika Portal
+        </span>
+        <h2 style="font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; line-height: 1.1;">Welcome Back!</h2>
+        <p style="font-size: 0.85rem; color: #9ca3af; line-height: 1.6;">
+          Order delicious canteen meals, quick study shakes, and track live kitchen timers directly with your student ID.
+        </p>
+      </div>
+
+      <!-- Quick Demo Sign-in buttons -->
+      <div style="border-top: 1px solid #222; padding-top: 20px; margin-top: 30px;">
+        <span style="font-size: 0.75rem; color: #888; display: block; margin-bottom: 8px; font-weight: 700;">Instant Demo Credentials:</span>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" onclick="quickFill('12345', 'pass123')" style="background: #111; color: #fff; border: 1px solid #333; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; text-align: left; cursor: pointer;">
+            <b>Student Demo:</b> 12345 / pass123
+          </button>
+          <button type="button" onclick="quickFill('admin', 'adminpass')" style="background: #111; color: #5eead4; border: 1px solid #333; padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; text-align: left; cursor: pointer;">
+            <b>Canteen Manager:</b> admin / adminpass
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Form Panel -->
+    <div style="padding: 40px; display: flex; flex-direction: column; justify-content: center;">
+      <!-- Toggle Header -->
+      <div style="display: flex; gap: 10px; margin-bottom: 24px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+        <button id="tab-login-btn" onclick="switchTab('login')" style="background: none; border: none; font-size: 1.2rem; font-weight: 900; color: #000; cursor: pointer; border-bottom: 2px solid #000; padding-bottom: 4px;">
+          Log In
+        </button>
+        <button id="tab-register-btn" onclick="switchTab('register')" style="background: none; border: none; font-size: 1.2rem; font-weight: 700; color: #999; cursor: pointer; padding-bottom: 4px;">
+          Sign Up
+        </button>
+      </div>
+
+      <div id="auth-error-msg" style="display: none; background: #fee2e2; border: 1px solid #fecaca; color: #b91c1c; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 14px;"></div>
+      <div id="auth-success-msg" style="display: none; background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; margin-bottom: 14px;"></div>
+
+      <!-- Login Form -->
+      <form id="login-form" onsubmit="handleLoginSubmit(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Student ID or Email</label>
+          <input type="text" id="login-id" required placeholder="e.g. 12345 or student1" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Password</label>
+          <input type="password" id="login-pwd" required placeholder="••••••••" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <button type="submit" id="login-submit-btn" style="width: 100%; background: #000; color: #fff; padding: 12px; border: none; border-radius: 6px; font-weight: 800; font-size: 0.9rem; cursor: pointer;">
+          Log In <i class="fas fa-arrow-right" style="margin-left: 6px;"></i>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" onsubmit="handleRegisterSubmit(event)" style="display: none;">
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Student ID</label>
+          <input type="text" id="reg-student-id" required placeholder="e.g. 11111" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Full Name</label>
+          <input type="text" id="reg-name" required placeholder="e.g. Rohan Verma" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Campus Email</label>
+          <input type="email" id="reg-email" required placeholder="student@campus.edu" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Password</label>
+          <input type="password" id="reg-pwd" required placeholder="••••••••" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; outline: none;">
+        </div>
+
+        <button type="submit" id="reg-submit-btn" style="width: 100%; background: #000; color: #fff; padding: 12px; border: none; border-radius: 6px; font-weight: 800; font-size: 0.9rem; cursor: pointer;">
+          Create Account
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchTab(mode) {
+  const loginForm = document.getElementById('login-form');
+  const regForm = document.getElementById('register-form');
+  const loginTab = document.getElementById('tab-login-btn');
+  const regTab = document.getElementById('tab-register-btn');
+  const err = document.getElementById('auth-error-msg');
+  const succ = document.getElementById('auth-success-msg');
+  err.style.display = 'none';
+  succ.style.display = 'none';
+
+  if (mode === 'login') {
+    loginForm.style.display = 'block';
+    regForm.style.display = 'none';
+    loginTab.style.color = '#000';
+    loginTab.style.borderBottom = '2px solid #000';
+    regTab.style.color = '#999';
+    regTab.style.borderBottom = 'none';
+  } else {
+    loginForm.style.display = 'none';
+    regForm.style.display = 'block';
+    regTab.style.color = '#000';
+    regTab.style.borderBottom = '2px solid #000';
+    loginTab.style.color = '#999';
+    loginTab.style.borderBottom = 'none';
+  }
+}
+
+function quickFill(id, pwd) {
+  switchTab('login');
+  document.getElementById('login-id').value = id;
+  document.getElementById('login-pwd').value = pwd;
+}
+
+async function handleLoginSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-submit-btn');
+  const err = document.getElementById('auth-error-msg');
+  err.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Authenticating...';
+
+  const loginId = document.getElementById('login-id').value.trim();
+  const password = document.getElementById('login-pwd').value;
+
+  try {
+    const res = await fetch('/api/auth/login/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ login_id: loginId, password })
+    });
+    const data = await res.json();
+    if (res.ok && data.success && data.user) {
+      if (data.user.role === 'canteen_owner' || data.user.student_id === 'admin') {
+        window.location.href = '/canteen/';
+      } else {
+        window.location.href = '/';
+      }
+    } else {
+      err.textContent = data.message || 'Invalid credentials.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Log In';
+    }
+  } catch {
+    err.textContent = 'Network error while logging in.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Log In';
+  }
+}
+
+async function handleRegisterSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('reg-submit-btn');
+  const err = document.getElementById('auth-error-msg');
+  const succ = document.getElementById('auth-success-msg');
+  err.style.display = 'none';
+  succ.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Registering...';
+
+  const studentId = document.getElementById('reg-student-id').value.trim();
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-pwd').value;
+
+  try {
+    const res = await fetch('/api/auth/register/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        student_id: studentId,
+        name: name,
+        email: email,
+        password: password,
+        role: 'customer'
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      succ.textContent = 'Account created successfully! Redirecting...';
+      succ.style.display = 'block';
+      setTimeout(() => { window.location.href = '/'; }, 1000);
+    } else {
+      err.textContent = data.message || 'Registration failed.';
+      err.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
+    }
+  } catch {
+    err.textContent = 'Network error occurred.';
+    err.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Create Account';
+  }
+}
+</script>
+{% endblock %}
+

@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Canteen Owner Menu Management — Cd: Zaika{% endblock %}
+
+{% block content %}
+<div style="background: #000; color: #fff; padding: 30px 16px; border-bottom: 1px solid #222;">
+  <div style="max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+    <div>
+      <div style="font-size: 0.75rem; color: #5eead4; font-weight: 700; text-transform: uppercase; margin-bottom: 4px;">
+        <i class="fas fa-store"></i> Canteen Owner & Kitchen Operations
+      </div>
+      <h1 style="font-size: 1.8rem; font-weight: 900; margin: 0;">Canteen Management</h1>
+    </div>
+
+    <!-- Tab switcher -->
+    <div style="display: flex; background: #111; padding: 4px; border-radius: 8px; border: 1px solid #333;">
+      <a href="?tab=orders" style="padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-decoration: none; {% if active_tab == 'orders' %}background: #fff; color: #000;{% else %}color: #ccc;{% endif %}">
+        <i class="fas fa-bell"></i> Live Orders ({{ pending_count }})
+      </a>
+      <a href="?tab=menu" style="padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; text-decoration: none; {% if active_tab == 'menu' %}background: #fff; color: #000;{% else %}color: #ccc;{% endif %}">
+        <i class="fas fa-utensils"></i> Menu Management ({{ menu_items.count }})
+      </a>
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 900px; margin: 0 auto; padding: 30px 16px 80px;">
+  {% if active_tab == 'orders' %}
+  <!-- Live Orders Section -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="font-size: 1.3rem; font-weight: 800; margin: 0;">Incoming Kitchen Orders</h2>
+    <button onclick="window.location.reload()" style="background: #fff; border: 1px solid #ccc; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+      <i class="fas fa-rotate"></i> Refresh Queue
+    </button>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 18px;">
+    {% for ord in orders %}
+    <div style="background: #ffffff; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 2px 4px rgba(0,0,0,0.05); padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <a href="{% url 'order_detail' ord.order_number %}" style="font-weight: 900; font-size: 1rem; color: #000; text-decoration: none;">
+            #{{ ord.order_number }}
+          </a>
+          <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 2px 8px; border-radius: 12px; {% if ord.status == 'completed' %}background: #d1fae5; color: #065f46;{% elif ord.status == 'preparing' %}background: #fef3c7; color: #92400e;{% elif ord.status == 'ready_for_pickup' %}background: #dbeafe; color: #1e40af;{% elif ord.status == 'cancelled' %}background: #fee2e2; color: #991b1b;{% else %}background: #f3f4f6; color: #374151;{% endif %}">
+            {{ ord.get_status_display }}
+          </span>
+        </div>
+
+        <div style="font-size: 0.75rem; color: #6b7280; margin-bottom: 12px;">
+          Student ID: <b>{{ ord.student_id }}</b> • {{ ord.created_at|date:"h:i A" }} • {{ ord.get_delivery_type_display }}
+        </div>
+
+        <div style="background: #f9fafb; padding: 10px; border-radius: 6px; border: 1px solid #e5e7eb; font-size: 0.8rem; line-height: 1.6; margin-bottom: 12px;">
+          {% for it in ord.items.all %}
+          <div style="display: flex; justify-content: space-between;">
+            <span>{{ it.quantity }}x {{ it.name }}</span>
+            <span style="color: #666;">Rs. {{ it.item_total|floatformat:0 }}</span>
+          </div>
+          {% endfor %}
+          <div style="border-top: 1px solid #e5e7eb; margin-top: 6px; padding-top: 4px; display: flex; justify-content: space-between; font-weight: 800; color: #000;">
+            <span>Total:</span>
+            <span>Rs. {{ ord.total_price|floatformat:2 }}</span>
+          </div>
+        </div>
+
+        {% if ord.special_instructions %}
+        <div style="background: #fffbeb; border: 1px solid #fde68a; color: #92400e; padding: 8px 10px; border-radius: 6px; font-size: 0.75rem; margin-bottom: 12px;">
+          <b>Note:</b> {{ ord.special_instructions }}
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Action buttons -->
+      <div style="display: flex; flex-wrap: wrap; gap: 6px; border-top: 1px solid #f3f4f6; padding-top: 12px;">
+        {% if ord.status == 'pending' %}
+        <button onclick="updateStatus('{{ ord.order_number }}', 'preparing')" style="background: #000; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          Start Cooking
+        </button>
+        {% elif ord.status == 'preparing' %}
+        <button onclick="updateStatus('{{ ord.order_number }}', 'ready_for_pickup')" style="background: #2563eb; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          Mark Ready for Pickup
+        </button>
+        {% elif ord.status == 'ready_for_pickup' %}
+        <button onclick="updateStatus('{{ ord.order_number }}', 'completed')" style="background: #059669; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          Mark Handed Over
+        </button>
+        {% endif %}
+
+        {% if ord.status != 'completed' and ord.status != 'cancelled' %}
+        <button onclick="updateStatus('{{ ord.order_number }}', 'cancelled')" style="background: none; border: 1px solid #f87171; color: #dc2626; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">
+          Reject
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    {% empty %}
+    <div style="grid-column: 1 / -1; background: #fff; padding: 50px; text-align: center; border: 1px solid #ddd; border-radius: 8px; color: #666;">
+      No orders in the kitchen queue right now.
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <!-- Menu Items Management Section (matching canteen.html) -->
+  <div style="margin-bottom: 30px;">
+    <!-- Add New Item Form (Matching canteen.html) -->
+    <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); padding: 24px; border: 1px solid #e5e7eb; margin-bottom: 30px;">
+      <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 6px;">Add New Menu Item</h2>
+      <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 16px;">Add new dishes or hot specials directly to the live campus menu.</p>
+
+      <form id="new-item-form" onsubmit="handleAddNewItem(event)" style="display: flex; flex-direction: column; gap: 12px;">
+        <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+          <input type="text" id="item-name" placeholder="Item Name (e.g. Masala Dosa, Cold Brew)" required style="flex: 2; min-width: 200px; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.85rem;">
+          <select id="item-category" style="flex: 1; min-width: 150px; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.85rem; background: #fff;">
+            <option value="Beverages">Beverages</option>
+            <option value="Snacks">Snacks</option>
+            <option value="Chinese & Indo-Chinese">Chinese & Indo-Chinese</option>
+            <option value="Noodles & Momos">Noodles & Momos</option>
+            <option value="Pizza & Specials">Pizza & Specials</option>
+            <option value="South Indian & Healthy">South Indian & Healthy</option>
+          </select>
+        </div>
+
+        <input type="text" id="item-description" placeholder="Item Description" required style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.85rem;">
+
+        <div style="display: flex; gap: 12px;">
+          <input type="number" id="item-price" placeholder="Price (Rs)" min="1" required style="flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.85rem;">
+          <input type="number" id="item-prep-time" placeholder="Preparation Time (minutes)" min="1" required style="flex: 1; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.85rem;">
+        </div>
+
+        <input type="url" id="item-image" placeholder="Image URL (https://...)" required style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 0.85rem;">
+
+        <input type="submit" id="add-submit-btn" value="Add Item" style="background-color: #000000; color: #ffffff; padding: 12px; border: none; border-radius: 4px; font-weight: 800; cursor: pointer; font-size: 0.9rem;">
+      </form>
+    </div>
+
+    <!-- Active Menu Items List (Matching canteen.html) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 16px;">Active Menu Items ({{ menu_items.count }})</h2>
+
+    <div style="display: flex; flex-direction: column; gap: 14px;">
+      {% for item in menu_items %}
+      <div style="background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.06); border: 1px solid #e5e7eb; padding: 15px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <img src="{{ item.image_url }}" alt="{{ item.name }}" class="grayscale-card-img" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;">
+          <div>
+            <h3 style="margin: 0 0 4px; font-size: 1.05rem; font-weight: 800; color: #111;">{{ item.name }}</h3>
+            <p style="margin: 0 0 4px; font-size: 0.75rem; color: #6b7280;">{{ item.description|truncatechars:70 }}</p>
+            <p style="margin: 0; font-size: 0.8rem; font-weight: 700; color: #000;">
+              Price: Rs. {{ item.price|floatformat:0 }} • Prep Time: {{ item.prep_time }} minutes
+            </p>
+          </div>
+        </div>
+        <button onclick="handleDeleteItem('{{ item.id }}', '{{ item.name|escapejs }}')" style="background-color: #000000; border: none; color: white; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">
+          <i class="fas fa-trash"></i> Delete
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+async function updateStatus(orderNumber, newStatus) {
+  if (!confirm(`Update order #${orderNumber} status to "${newStatus}"?`)) return;
+
+  try {
+    const res = await fetch(`/api/orders/${orderNumber}/`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ status: newStatus })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      window.location.reload();
+    } else {
+      alert(data.message || 'Update failed.');
+    }
+  } catch {
+    alert('Network error while updating status.');
+  }
+}
+
+async function handleAddNewItem(e) {
+  e.preventDefault();
+  const btn = document.getElementById('add-submit-btn');
+  btn.disabled = true;
+  btn.value = 'Adding...';
+
+  try {
+    const res = await fetch('/api/menu-items/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({
+        name: document.getElementById('item-name').value,
+        category: document.getElementById('item-category').value,
+        description: document.getElementById('item-description').value,
+        price: document.getElementById('item-price').value,
+        prep_time: document.getElementById('item-prep-time').value,
+        image_url: document.getElementById('item-image').value
+      })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      window.location.reload();
+    } else {
+      alert(data.message || 'Could not add item.');
+      btn.disabled = false;
+      btn.value = 'Add Item';
+    }
+  } catch {
+    alert('Network error occurred.');
+    btn.disabled = false;
+    btn.value = 'Add Item';
+  }
+}
+
+async function handleDeleteItem(itemId, itemName) {
+  if (!confirm(`Are you sure you want to delete "${itemName}"?`)) return;
+
+  try {
+    const res = await fetch(`/api/menu-items/${itemId}/`, {
+      method: 'DELETE',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken')
+      }
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      window.location.reload();
+    } else {
+      alert(data.message || 'Failed to delete item.');
+    }
+  } catch {
+    alert('Network error while deleting item.');
+  }
+}
+</script>
+{% endblock %}
+

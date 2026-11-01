@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Campus Food Menu — Cd: Zaika{% endblock %}
+
+{% block content %}
+<div style="max-width: 860px; margin: 0 auto; padding: 30px 16px 120px;">
+  <!-- Header Title & Review Button (matching final_menu.html) -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h1 style="font-size: 2rem; font-weight: 900; color: #111;">Campus Food Menu</h1>
+    <button onclick="openModal('reviews-modal')" style="background: #000; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+      <i class="fas fa-star" style="color: #fbbf24;"></i> Reviews
+    </button>
+  </div>
+
+  <!-- Cafe Images Banner (Matching final_menu.html) -->
+  <div style="display: flex; justify-content: space-between; gap: 12px; margin-bottom: 20px;">
+    <div style="flex: 1; height: 180px; border-radius: 8px; overflow: hidden; background: #eee;">
+      <img src="https://media.istockphoto.com/id/1148223648/photo/interior-of-a-pub.jpg?s=612x612&w=0&k=20&c=ol9gdn-NQRREHUydQ2loU6WpCSeUTjt8qFGekYDvx0o=" alt="Cafe Interior" class="grayscale-card-img" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+    <div style="flex: 1; height: 180px; border-radius: 8px; overflow: hidden; background: #eee;">
+      <img src="https://founterior.com/wp-content/uploads/2014/09/Cafe-playground-in-the-backayrd.jpg" alt="Cafe Exterior" class="grayscale-card-img" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+    <div style="flex: 1; height: 180px; border-radius: 8px; overflow: hidden; background: #eee;">
+      <img src="https://media-cdn.tripadvisor.com/media/photo-o/0a/80/ac/eb/cafe-restaurant-amsterdam.jpg" alt="Cafe Ambiance" class="grayscale-card-img" style="width: 100%; height: 100%; object-fit: cover;">
+    </div>
+  </div>
+
+  <!-- Motivation quote (Matching final_menu.html) -->
+  <p style="text-align: center; font-style: italic; color: #555; font-size: 0.9rem; margin-bottom: 24px; padding: 12px; background: #fff; border-radius: 6px; border: 1px solid #e5e7eb;">
+    &ldquo;Indulge in our delightful menu. Remember, good food choices are a great way to nourish both body and soul!&rdquo;
+  </p>
+
+  <!-- Search & Category Filters -->
+  <div style="margin-bottom: 24px;">
+    <form method="GET" action="{% url 'menu' %}" style="display: flex; gap: 8px; margin-bottom: 14px;">
+      <input type="text" name="search" value="{{ search_query }}" placeholder="Search dishes, coffees, shakes, burgers, momos, pizzas..." style="flex: 1; padding: 10px 14px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.9rem; outline: none; background: #fff;">
+      <button type="submit" style="background: #000; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer;">
+        Search
+      </button>
+    </form>
+
+    <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px;">
+      {% for cat in categories %}
+      <a href="?category={{ cat }}{% if search_query %}&search={{ search_query }}{% endif %}" style="white-space: nowrap; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-decoration: none; transition: all 0.2s; {% if selected_category == cat %}background: #000; color: #fff;{% else %}background: #fff; color: #4b5563; border: 1px solid #d1d5db;{% endif %}">
+        {{ cat }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Menu Item Cards (Structure faithfully matching final_menu.html) -->
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    {% for item in menu_items %}
+    <div style="background: #ffffff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; padding: 16px; display: flex; align-items: center; gap: 18px; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 6px 12px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.08)';">
+      <!-- Dish Image with grayscale hover -->
+      <div style="width: 100px; height: 100px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: #eee;">
+        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="grayscale-card-img" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+
+      <div style="flex-grow: 1;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <h3 style="margin: 0; font-size: 1.15rem; font-weight: 800; color: #111;">{{ item.name }}</h3>
+          {% if item.is_vegetarian %}
+          <span style="background: #ecfdf5; color: #047857; font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; border: 1px solid #a7f3d0;">VEG</span>
+          {% endif %}
+        </div>
+
+        <p style="margin: 0 0 4px; font-size: 0.8rem; color: #6b7280;">{{ item.description }}</p>
+        <p style="margin: 0 0 2px; font-weight: 800; font-size: 0.9rem; color: #000;">Price: Rs. {{ item.price|floatformat:0 }}</p>
+        <p style="margin: 0 0 8px; font-size: 0.75rem; color: #4b5563;"><i class="fas fa-clock" style="color: #0d9488;"></i> Preparation Time: {{ item.prep_time }} minutes</p>
+
+        <!-- Quantity Controls matching final_menu.html -->
+        <div>
+          <!-- Initial Add Button (when qty is 0) -->
+          <button id="addbtn-{{ item.id }}" onclick="CartManager.addItem('{{ item.id }}', '{{ item.name|escapejs }}', '{{ item.price }}', '{{ item.prep_time }}', '{{ item.image_url|escapejs }}')" style="background: #000; color: #fff; border: none; padding: 6px 14px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; cursor: pointer;">
+            <i class="fas fa-plus"></i> Add to Tray
+          </button>
+
+          <!-- Interactive quantity controls (revealed when qty > 0) -->
+          <div id="controls-{{ item.id }}" style="display: none; align-items: center; gap: 6px;">
+            <button onclick="CartManager.decreaseQuantity('{{ item.id }}')" style="background: #000; color: #fff; border: none; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer;">-</button>
+            <input type="number" class="item-qty-input" data-item-id="{{ item.id }}" value="0" min="0" readonly style="width: 44px; height: 28px; text-align: center; border: 1px solid #000; font-weight: 800; border-radius: 4px; font-size: 0.85rem;">
+            <button onclick="CartManager.increaseQuantity('{{ item.id }}')" style="background: #000; color: #fff; border: none; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer;">+</button>
+            <button onclick="CartManager.deleteItem('{{ item.id }}')" style="background: #fff; border: 1px solid #000; color: #000; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; margin-left: 6px;">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div style="background: #fff; padding: 40px; text-align: center; border-radius: 8px; border: 1px solid #ddd; color: #666;">
+      No dishes found matching your selection.
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Student Reviews Modal (matching review button in final_menu.html) -->
+<div class="modal-overlay" id="reviews-modal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-star" style="color: #fbbf24;"></i>
+        <span>Student Reviews & Ratings</span>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal('reviews-modal')">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div style="max-height: 320px; overflow-y: auto; padding-right: 4px;">
+        {% for rev in reviews %}
+        <div style="background: #f9fafb; padding: 10px 14px; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 10px; font-size: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <b>{{ rev.student_id }}</b>
+            <span style="color: #d97706; font-weight: bold;">★ {{ rev.rating }}.0</span>
+          </div>
+          <p style="margin: 0; color: #4b5563;">{{ rev.comment }}</p>
+        </div>
+        {% empty %}
+        <div style="background: #f9fafb; padding: 12px; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 10px; font-size: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <b>Aarav Sharma (3rd Year CS)</b>
+            <span style="color: #d97706; font-weight: bold;">★ 5.0</span>
+          </div>
+          <p style="margin: 0; color: #4b5563;">Kulhad Pizza and Vanilla Shake are unbeatable during midnight project sessions!</p>
+        </div>
+        <div style="background: #f9fafb; padding: 12px; border-radius: 6px; border: 1px solid #e5e7eb; margin-bottom: 10px; font-size: 0.8rem;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <b>Priya Patel (2nd Year EE)</b>
+            <span style="color: #d97706; font-weight: bold;">★ 4.5</span>
+          </div>
+          <p style="margin: 0; color: #4b5563;">Maggie Masaledar is freshly made and ready in 8 mins flat. Really appreciate the transparent prep time.</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <button onclick="closeModal('reviews-modal')" style="width: 100%; margin-top: 14px; padding: 10px; background: #000; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

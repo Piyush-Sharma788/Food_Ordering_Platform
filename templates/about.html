@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us & Contact — Cd: Zaika{% endblock %}
+
+{% block content %}
+<!-- Hero Header (Matching final about us.html) -->
+<section style="background: #000; color: #fff; padding: 60px 20px 50px; text-align: center; border-bottom: 1px solid #222;">
+  <div style="max-width: 800px; margin: 0 auto;">
+    <span style="display: inline-block; background: #111; color: #5eead4; border: 1px solid #333; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; margin-bottom: 14px;">
+      About Cd: Zaika
+    </span>
+    <h1 style="font-size: 2.8rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 12px;">
+      Our Mission & Campus Story
+    </h1>
+    <p style="font-size: 1.05rem; color: #9ca3af; line-height: 1.6;">
+      We place quality and customer satisfaction at the forefront of everything we do, providing seamless dining experiences, responsive customer service, and reliable campus technology.
+    </p>
+  </div>
+</section>
+
+<div style="max-width: 900px; margin: 0 auto; padding: 40px 16px 80px;">
+  <!-- Narrative Section -->
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; align-items: center; margin-bottom: 60px;">
+    <div>
+      <h2 style="font-size: 1.8rem; font-weight: 900; margin-bottom: 14px; color: #111;">About Us</h2>
+      <p style="font-size: 0.9rem; color: #4b5563; line-height: 1.7; margin-bottom: 12px;">
+        Our team members embrace new ideas, technologies, and approaches to solve real-world student challenges. Campus dining should be transparent, accessible, and fast.
+      </p>
+      <h3 style="font-size: 1.3rem; font-weight: 800; margin: 20px 0 8px; color: #111;">Our Mission</h3>
+      <p style="font-size: 0.9rem; color: #4b5563; line-height: 1.7;">
+        To empower campus eateries, canteens, and hungry students with cutting-edge technology and unparalleled operational support, driving convenience and satisfaction across the entire campus.
+      </p>
+    </div>
+
+    <div style="background: #f9fafb; border: 2px solid #000; border-radius: 12px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+      <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+        <i class="fas fa-shield-halved" style="color: #0d9488;"></i> The Zaika Standard
+      </h3>
+      <ul style="list-style: none; font-size: 0.85rem; color: #4b5563; line-height: 1.8;">
+        <li><i class="fas fa-check" style="color: #0d9488; margin-right: 8px;"></i> <b>No Guesswork:</b> Real-time kitchen countdown based on preparation time math.</li>
+        <li><i class="fas fa-check" style="color: #0d9488; margin-right: 8px;"></i> <b>Zero Hidden Fees:</b> Clear student pricing on all shakes, meals, and snacks.</li>
+        <li><i class="fas fa-check" style="color: #0d9488; margin-right: 8px;"></i> <b>Instant Records:</b> ReportLab PDF invoices downloadable for all orders.</li>
+        <li><i class="fas fa-check" style="color: #0d9488; margin-right: 8px;"></i> <b>AI Assistance:</b> Smart menu discovery powered by OpenAI & Gemini.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Leadership Team (Matching final about us.html) -->
+  <div style="margin-bottom: 60px;">
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h2 style="font-size: 1.8rem; font-weight: 900; color: #111; margin-bottom: 6px;">Our Leadership Team</h2>
+      <p style="font-size: 0.85rem; color: #6b7280;">Meet the builders behind Cd: Zaika.</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+      <!-- Member 1: Tanishq Soni -->
+      <div style="background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="width: 110px; height: 110px; border-radius: 50%; overflow: hidden; margin: 0 auto 14px; border: 2px solid #000;">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Tanishq Soni" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;">Tanishq Soni</h3>
+        <p style="font-size: 0.8rem; font-weight: 700; color: #0d9488; text-transform: uppercase; margin-bottom: 8px;">Co-founder &amp; CEO</p>
+        <p style="font-size: 0.8rem; color: #6b7280;">Leading campus culinary partnerships and platform vision.</p>
+      </div>
+
+      <!-- Member 2: Akash Singh -->
+      <div style="background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="width: 110px; height: 110px; border-radius: 50%; overflow: hidden; margin: 0 auto 14px; border: 2px solid #000;">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" alt="Akash Singh" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;">Akash Singh</h3>
+        <p style="font-size: 0.8rem; font-weight: 700; color: #0d9488; text-transform: uppercase; margin-bottom: 8px;">CTO &amp; Head of Operations</p>
+        <p style="font-size: 0.8rem; color: #6b7280;">Spearheading real-time order dispatch and backend architecture.</p>
+      </div>
+
+      <!-- Member 3: Daksh Sharma -->
+      <div style="background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 24px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+        <div style="width: 110px; height: 110px; border-radius: 50%; overflow: hidden; margin: 0 auto 14px; border: 2px solid #000;">
+          <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" alt="Daksh Sharma" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 4px;">Daksh Sharma</h3>
+        <p style="font-size: 0.8rem; font-weight: 700; color: #0d9488; text-transform: uppercase; margin-bottom: 8px;">Lead Architect &amp; Community</p>
+        <p style="font-size: 0.8rem; color: #6b7280;">Designing dining interfaces and student community initiatives.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Us Form (Matching final about us.html) -->
+  <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 12px; padding: 32px;">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <h2 style="font-size: 1.6rem; font-weight: 900; color: #111; margin-bottom: 4px;">Contact Us</h2>
+      <p style="font-size: 0.85rem; color: #6b7280;">Have a suggestion, kitchen query, or campus dining feedback?</p>
+    </div>
+
+    <form onsubmit="handleContactSubmit(event)" style="max-width: 540px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px;">
+      <div id="contact-success" style="display: none; background: #d1fae5; border: 1px solid #a7f3d0; color: #065f46; padding: 12px; border-radius: 6px; font-size: 0.85rem; text-align: center; font-weight: bold;">
+        Thank you for contacting Cd: Zaika! Our student operations team will reply to your campus email shortly.
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Name</label>
+        <input type="text" id="contact-name" required placeholder="Your full name" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: #fff;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Campus Email</label>
+        <input type="email" id="contact-email" required placeholder="student@campus.edu" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: #fff;">
+      </div>
+
+      <div>
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Message</label>
+        <textarea id="contact-msg" rows="4" required placeholder="How can we help make campus dining better?" style="width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; background: #fff;"></textarea>
+      </div>
+
+      <button type="submit" style="background: #000; color: #fff; padding: 12px; border: none; border-radius: 6px; font-weight: 800; font-size: 0.9rem; cursor: pointer;">
+        Send Message <i class="fas fa-paper-plane" style="margin-left: 6px;"></i>
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function handleContactSubmit(e) {
+  e.preventDefault();
+  document.getElementById('contact-success').style.display = 'block';
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-email').value = '';
+  document.getElementById('contact-msg').value = '';
+}
+</script>
+{% endblock %}
+

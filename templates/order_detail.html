@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order #{{ order.order_number }} — Cd: Zaika{% endblock %}
+
+{% block content %}
+<div style="max-width: 760px; margin: 0 auto; padding: 40px 16px 80px;">
+  <!-- Back link -->
+  <a href="{% url 'menu' %}" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 700; color: #4b5563; text-decoration: none; margin-bottom: 20px;">
+    <i class="fas fa-arrow-left"></i> Back to Menu
+  </a>
+
+  <!-- Status Card -->
+  <div style="background: #ffffff; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.06); padding: 28px; margin-bottom: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; border-bottom: 1px solid #e5e7eb; padding-bottom: 18px; margin-bottom: 24px;">
+      <div>
+        <div style="font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
+          CAMPUS KITCHEN ORDER • <b>{{ order.restaurant_name }}</b>
+        </div>
+        <h1 style="font-size: 1.8rem; font-weight: 900; color: #111; margin: 0;">
+          #{{ order.order_number }}
+        </h1>
+      </div>
+
+      <div style="display: flex; gap: 8px;">
+        <a href="{% url 'order_receipt_pdf' order.order_number %}" style="background: #000; color: #fff; text-decoration: none; font-size: 0.8rem; font-weight: 700; padding: 8px 16px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px;">
+          <i class="fas fa-file-pdf" style="color: #5eead4;"></i> Download PDF Receipt
+        </a>
+        <a href="{% url 'order_receipt_html' order.order_number %}" target="_blank" style="background: #f3f4f6; color: #111; text-decoration: none; font-size: 0.8rem; font-weight: 700; padding: 8px 12px; border-radius: 6px; border: 1px solid #d1d5db;" title="Printable HTML">
+          <i class="fas fa-print"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- 5-Step Order Progress Visual Stepper -->
+    {% if order.status != 'cancelled' and order.status != 'rejected' %}
+    <div style="margin-bottom: 30px;">
+      <div style="display: grid; grid-template-columns: repeat(5, 1fr); text-align: center; gap: 6px;">
+        <!-- Step 1: Received -->
+        <div>
+          <div style="width: 38px; height: 38px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; background: #000; color: #fff;">
+            <i class="fas fa-shopping-bag"></i>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 700; color: #000;">Received</span>
+        </div>
+
+        <!-- Step 2: Confirmed -->
+        <div>
+          <div style="width: 38px; height: 38px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; {% if order.status in 'confirmed,preparing,ready_for_pickup,out_for_delivery,completed' %}background: #000; color: #fff;{% else %}background: #e5e7eb; color: #9ca3af;{% endif %}">
+            <i class="fas fa-check"></i>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 700; {% if order.status in 'confirmed,preparing,ready_for_pickup,out_for_delivery,completed' %}color: #000;{% else %}color: #9ca3af;{% endif %}">Confirmed</span>
+        </div>
+
+        <!-- Step 3: Preparing -->
+        <div>
+          <div style="width: 38px; height: 38px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; {% if order.status in 'preparing,ready_for_pickup,out_for_delivery,completed' %}background: #000; color: #5eead4; border: 2px solid #0d9488;{% else %}background: #e5e7eb; color: #9ca3af;{% endif %}">
+            <i class="fas fa-fire-burner"></i>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 700; {% if order.status in 'preparing,ready_for_pickup,out_for_delivery,completed' %}color: #000;{% else %}color: #9ca3af;{% endif %}">Cooking</span>
+        </div>
+
+        <!-- Step 4: Ready -->
+        <div>
+          <div style="width: 38px; height: 38px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; {% if order.status in 'ready_for_pickup,out_for_delivery,completed' %}background: #000; color: #fff;{% else %}background: #e5e7eb; color: #9ca3af;{% endif %}">
+            <i class="fas fa-bell"></i>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 700; {% if order.status in 'ready_for_pickup,out_for_delivery,completed' %}color: #000;{% else %}color: #9ca3af;{% endif %}">Ready</span>
+        </div>
+
+        <!-- Step 5: Completed -->
+        <div>
+          <div style="width: 38px; height: 38px; border-radius: 50%; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; {% if order.status == 'completed' %}background: #047857; color: #fff;{% else %}background: #e5e7eb; color: #9ca3af;{% endif %}">
+            <i class="fas fa-box-open"></i>
+          </div>
+          <span style="font-size: 0.7rem; font-weight: 700; {% if order.status == 'completed' %}color: #047857;{% else %}color: #9ca3af;{% endif %}">Handed Over</span>
+        </div>
+      </div>
+
+      <!-- Prep Callout -->
+      <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 18px; margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background: #ccfbf1; color: #0f766e; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div>
+            <span style="font-size: 0.75rem; color: #6b7280; display: block;">Estimated Kitchen Wait Time:</span>
+            <span style="font-size: 1.1rem; font-weight: 900; color: #111;">~{{ order.estimated_prep_time_minutes }} minutes</span>
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <span style="font-size: 0.75rem; color: #6b7280; display: block;">Fulfillment Mode:</span>
+          <b style="font-size: 0.85rem; color: #111;">{{ order.get_delivery_type_display }}</b>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; padding: 14px; border-radius: 8px; text-align: center; font-weight: 700; font-size: 0.85rem; margin-bottom: 24px;">
+      This order has been marked as {{ order.status|upper }}.
+    </div>
+    {% endif %}
+
+    <!-- Itemized List -->
+    <h3 style="font-size: 0.95rem; font-weight: 800; color: #111; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Ordered Dishes</h3>
+
+    <div style="border-top: 1px solid #e5e7eb; border-bottom: 1px solid #e5e7eb; margin-bottom: 16px;">
+      {% for it in items %}
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem;">
+        <div>
+          <b style="color: #000;">{{ it.quantity }}x</b> {{ it.name }}
+        </div>
+        <span style="font-weight: 700; color: #111;">Rs. {{ it.item_total|floatformat:2 }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Totals -->
+    <div style="background: #f9fafb; padding: 14px 18px; border-radius: 8px; font-size: 0.85rem; line-height: 1.8;">
+      <div style="display: flex; justify-content: space-between; color: #4b5563;">
+        <span>Items Subtotal:</span>
+        <span>Rs. {{ order.subtotal|floatformat:2 }}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; color: #4b5563;">
+        <span>Campus Convenience Tax (5%):</span>
+        <span>Rs. {{ order.tax|floatformat:2 }}</span>
+      </div>
+      {% if order.delivery_fee > 0 %}
+      <div style="display: flex; justify-content: space-between; color: #4b5563;">
+        <span>Campus Delivery Fee:</span>
+        <span>Rs. {{ order.delivery_fee|floatformat:2 }}</span>
+      </div>
+      {% endif %}
+      <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 900; color: #000; border-top: 1px solid #ddd; padding-top: 8px; margin-top: 6px;">
+        <span>Total Paid:</span>
+        <span style="color: #0d9488;">Rs. {{ order.total_price|floatformat:2 }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

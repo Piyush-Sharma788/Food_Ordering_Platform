@@ -1,35 +1,31 @@
-# dependencies
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+.venv/
+venv/
+ENV/
+env/
+media/
+staticfiles/
+
+# Node / Next (legacy references)
 /node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
 /.next/
 /out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# local env files
-.env*.local
-.env
-
-# vercel
-.vercel
-
-# typescript
 *.tsbuildinfo
 next-env.d.ts
 
+# Testing
+/coverage
+.pytest_cache/
+
+# Misc
+.DS_Store
+*.pem
+.env*.local
+.env
+
+# Debug logs
+*.log
